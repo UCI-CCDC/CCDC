@@ -7,7 +7,7 @@
 #UCI CCDC linux script for inventory & common operations
 
 #Written by UCI CCDC linux subteam
-#UCI CCDC, 2020
+#UCI CCDC, 2021
 ########################################################
 
 
@@ -40,7 +40,10 @@ updateOS() {
 
 #FINISH ME PLS
 installPackages() {
-    packages="sudo nmap tmux tshark vim hostname htop clamav"
+    //packages to install, independent of package manager
+    packages="sudo nmap tmux tshark vim hostname htop clamav lynis"
+
+
     printf "this function will be used to install important/essential packages on barebones systems"
         if [ $(command -v apt-get) ]; then # Debian based
             apt-get install $packages -y -q
@@ -52,7 +55,7 @@ installPackages() {
         elif [ $(command -v apk) ]; then # Alpine
             apk update
             apk upgrade
-            apk add bash vim man-pages mdocml-apropos bash-doc bash-completion util-linux pciutils usbutils coreutils binutils findutils attr dialog dialog-doc grep grep-doc util-linux-doc pciutils usbutils binutils findutils readline lsof lsof-doc less less-doc nano nano-doc curl-doc
+            apk add bash vim man-pages mdocml-apropos bash-doc bash-completion util-linux pciutils usbutils coreutils binutils findutils attr dialog dialog-doc grep grep-doc util-linux-doc pciutils usbutils binutils findutils readline lsof lsof-doc less less-doc nano nano-doc curl-doc 
 
             apk add $packages
         fi
@@ -129,7 +132,7 @@ s)
         
     read -s -p "Enter root password for mysql database  " pass
     for db in $(mysql -u root -p$pass -e 'show databases' --skip-column-names); do
-        mysqldump -u root -p$pass "$db" > "$HOME/sql-backup/$db.sql"
+        mysqldump --skip-lock-tables -u root -p$pass "$db" > "$HOME/sql-backup/$db.sql"
     done
     cp  -r /etc/mysql /$HOME/sql-backup/
     tar -czf $HOME/$HOSTNAME-sqlbackup.tgz $HOME/sql-backup
@@ -246,7 +249,7 @@ for user in $(cut -f1 -d: /etc/passwd); do crontab -u "$user" -l 2> >(grep -v 'n
 
 #saves services to variable, prints them out to terminal in blue
 printf '\n***services you should cry about***\n'
-services=$(ps aux | grep -i 'docker\|samba\|postfix\|dovecot\|smtp\|psql\|ssh\|clamav\|mysql\|bind9\|apache\|smbfs\|samba\|openvpn\|splunk' | grep -v "grep")
+services=$(ps aux | grep -i 'docker\|samba\|postfix\|dovecot\|smtp\|psql\|ssh\|clamav\|mysql\|bind9\|apache\|smbfs\|samba\|openvpn\|splunk\|nginx\|mysql\|mariadb\|ftp' | grep -v "grep")
 echo -e "\e[34m"
 echo "Services on this machine:" >> $outFile
 echo $services | $adtfile
