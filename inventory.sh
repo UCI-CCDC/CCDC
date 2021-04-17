@@ -197,7 +197,6 @@ echo '
 printf "\n*** generating inv direcory and audit.txt in your root home directory\n"
 mkdir $HOME/inv/ >&/dev/null;       #creates directory; stderr is redirected in the case that directory already exists
 outFile="$HOME/inv/audit-$(hostname).txt"
-touch outFile
 adtfile="tee -a $HOME/inv/audit-$(hostname).txt"
 
 
