@@ -1,4 +1,13 @@
 #!/bin/bash
+########################################################
+# https://github.com/UCI-CCDC/CCDC2020
+# script raw is at https://raw.githubusercontent.com/UCI-CCDC/CCDC2021/master/makeforwarder.sh
+#UCI CCDC setup script for splunk client setup 
+
+#Written by UCI CCDC linux subteam
+#UCI CCDC, 2021
+########################################################
+
 
 if [[ $EUID -ne 0 ]]; then
 	printf 'Must be run as root, exiting!\n'
