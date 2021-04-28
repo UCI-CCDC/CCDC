@@ -7,7 +7,7 @@
 #UCI CCDC linux script for inventory & common operations
 
 #Written by UCI CCDC linux subteam
-#UCI CCDC, 2020
+#UCI CCDC, 2021
 ########################################################
 
 
@@ -40,10 +40,15 @@ updateOS() {
 
 #FINISH ME PLS
 installPackages() {
-    packages="sudo nmap tmux tshark vim hostname htop clamav"
+    #packages to install, independent of package manager
+    packages="sudo nmap tmux tshark vim hostname htop clamav lynis"
+
+
     printf "this function will be used to install important/essential packages on barebones systems"
         if [ $(command -v apt-get) ]; then # Debian based
             apt-get install $packages -y -q
+            #debian only packages
+            apt-get install debsums
 
         elif [ $(command -v yum) ]; then
             yum -y install $packages 
@@ -52,7 +57,7 @@ installPackages() {
         elif [ $(command -v apk) ]; then # Alpine
             apk update
             apk upgrade
-            apk add bash vim man-pages mdocml-apropos bash-doc bash-completion util-linux pciutils usbutils coreutils binutils findutils attr dialog dialog-doc grep grep-doc util-linux-doc pciutils usbutils binutils findutils readline lsof lsof-doc less less-doc nano nano-doc curl-doc
+            apk add bash vim man-pages mdocml-apropos bash-doc bash-completion util-linux pciutils usbutils coreutils binutils findutils attr dialog dialog-doc grep grep-doc util-linux-doc pciutils usbutils binutils findutils readline lsof lsof-doc less less-doc nano nano-doc curl-doc 
 
             apk add $packages
         fi
@@ -97,6 +102,7 @@ h)
     printf " -i     Installs updates AND useful packages\n"
     printf " -s     Backups MYSQL databases and config files\n"
     printf " -r     Restore MYSQL database from backup tar archive (passed as argument)\n"
+    printf " -d     Runs Debsums to check file validity on debian based systems\n"
 
     printf "\n\n\n"
     exit 1;;
@@ -129,7 +135,7 @@ s)
         
     read -s -p "Enter root password for mysql database  " pass
     for db in $(mysql -u root -p$pass -e 'show databases' --skip-column-names); do
-        mysqldump -u root -p$pass "$db" > "$HOME/sql-backup/$db.sql"
+        mysqldump --skip-lock-tables -u root -p$pass "$db" > "$HOME/sql-backup/$db.sql"
     done
     cp  -r /etc/mysql /$HOME/sql-backup/
     tar -czf $HOME/$HOSTNAME-sqlbackup.tgz $HOME/sql-backup
@@ -153,6 +159,17 @@ r)
 
     exit 1;;
 
+d)
+    printf "Checking file validity using debsums"
+
+    apt install -y debsums
+
+    echo "File validity output of debsums" >> $outFile
+    debsums | grep -v OK | $adtfile
+
+
+
+    exit 1;;
 
 #both of these are error handling. The top one handles incorrect flags, the bottom one handles when no argument is passed for a flag that requires one
 \?) echo "incorrect syntax, use -h for help"
@@ -180,7 +197,6 @@ echo '
 printf "\n*** generating inv direcory and audit.txt in your root home directory\n"
 mkdir $HOME/inv/ >&/dev/null;       #creates directory; stderr is redirected in the case that directory already exists
 outFile="$HOME/inv/audit-$(hostname).txt"
-touch outFile
 adtfile="tee -a $HOME/inv/audit-$(hostname).txt"
 
 
@@ -246,10 +262,10 @@ for user in $(cut -f1 -d: /etc/passwd); do crontab -u "$user" -l 2> >(grep -v 'n
 
 #saves services to variable, prints them out to terminal in blue
 printf '\n***services you should cry about***\n'
-services=$(ps aux | grep -i 'docker\|samba\|postfix\|dovecot\|smtp\|psql\|ssh\|clamav\|mysql\|bind9\|apache\|smbfs\|samba\|openvpn\|splunk' | grep -v "grep")
+services=$(ps aux | grep -i 'docker\|samba\|postfix\|dovecot\|smtp\|psql\|ssh\|clamav\|mysql\|bind9\|apache\|smbfs\|samba\|openvpn\|splunk\|nginx\|mysql\|mariadb\|ftp\|slapd\|amavisd\|wazuh' | grep -v "grep")
 echo -e "\e[34m"
 echo "Services on this machine:" >> $outFile
-echo $services | $adtfile
+echo "$services" | $adtfile
 echo -e "\e[0m" #formatting so audit file is less fucked with the color markers
 
 banner >> $outFile
