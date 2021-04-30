@@ -1,9 +1,7 @@
 #!/bin/bash
 
 ########################################################
-# https://github.com/UCI-CCDC/CCDC2020
-# script raw is at https://git.io/uciccdc20
-# to install: wget https://git.io/uciccdc20 -O inv.sh && chmod +x inv.sh
+# https://github.com/UCI-CCDC/CCDC
 #UCI CCDC linux script for inventory & common operations
 
 #Written by UCI CCDC linux subteam
@@ -165,7 +163,7 @@ d)
     apt install -y debsums
 
     echo "File validity output of debsums" >> $outFile
-    debsums | grep -v OK | $adtfile
+    debsums -c | $adtfile
 
 
 
@@ -195,9 +193,9 @@ echo '
 
 #generate inv directory, audit.txt, and set up variables for redirection
 printf "\n*** generating inv direcory and audit.txt in your root home directory\n"
-mkdir $HOME/inv/ >&/dev/null;       #creates directory; stderr is redirected in the case that directory already exists
+mkdir -p /root/inv/ 
 outFile="$HOME/inv/audit-$(hostname).txt"
-adtfile="tee -a $HOME/inv/audit-$(hostname).txt"
+adtfile="tee -a /root/inv/audit-$(hostname).txt"
 
 
 
@@ -207,6 +205,8 @@ echo -e "\e[0m"
 
 echo "Date: $(date)" >> $outFile
 
+# this is not compatible with distros that don't use the os-release file; /etc/*release would make it compatible, but I am not sure about 
+# the validity of the formatting
 osOut=$(cat /etc/os-release | grep -w "PRETTY_NAME" | cut -d "=" -f 2)
 
 printf "This machine's OS is "
@@ -227,7 +227,6 @@ if [ -f /etc/sudoers ] ; then
 fi 
 
 
-# I stole this from jordan
 minid=$(grep "^UID_MIN" /etc/login.defs || echo 1000)n
 maxid=$(grep "^UID_MAX" /etc/login.defs || echo 60000)
 printf "========================================================\n| Users List | Key: \033[01;34mUID = 0\033[0m, \033[01;32mUser\033[0m, \033[01;33mCan Login\033[0m, \033[01;31mNo Login\033[0m |\n========================================================\n"
@@ -238,6 +237,7 @@ else if ($3 >= minuid && $3 <= maxuid) printf "\033[01;32m%s\033[0m\n", $1;
 else printf "\033[01;33m%s\033[0m\n", $1; 
 }' /etc/passwd | column
 
+#look for users in listed groups
 printf "\n[  \033[01;35mUser\033[0m, \033[01;36mGroup\033[0m  ]\n" && grep "sudo\|adm\|bin\|sys\|uucp\|wheel\|nopasswdlogin\|root" /etc/group | awk -F: '{printf "\033[01;35m" $4 "\033[0m : \033[01;36m" $1 "\033[0m\n"}' | column
 
 # ## Less Fancy /etc/shadow
@@ -260,6 +260,7 @@ printf "\n\e[35mCrontabs\e[0m\n"
 sudo grep -R . /var/spool/cron/crontabs/
 for user in $(cut -f1 -d: /etc/passwd); do crontab -u "$user" -l 2> >(grep -v 'no crontab for'); done
 
+# we should be using lsof -i here, but again, no idea if it is compatible
 #saves services to variable, prints them out to terminal in blue
 printf '\n***services you should cry about***\n'
 services=$(ps aux | grep -i 'docker\|samba\|postfix\|dovecot\|smtp\|psql\|ssh\|clamav\|mysql\|bind9\|apache\|smbfs\|samba\|openvpn\|splunk\|nginx\|mysql\|mariadb\|ftp\|slapd\|amavisd\|wazuh' | grep -v "grep")
@@ -281,6 +282,3 @@ if [ "$ShouldInstall" = "true" ]; then
     installPackages
 fi
 
-
-
-# this string prints the current system time and date "\033[01;30m$(date)\033[0m: %s\n"
