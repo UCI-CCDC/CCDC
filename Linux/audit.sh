@@ -177,7 +177,7 @@ a)
     if ! test -f "/root/inv/harden-$(hostname)"; then
         printf "as of May 1, 2021 harden script is not functional. Don't say yes yet.\n"
         printf "or do, I dare you\n"
-        read -r -p "Looks like harden script has not been called yet. Calling it first is HIGHLY recommended. Would you like to call that now? [Y/n] " response
+        read -r -p "Looks like harden script has not been called yet. Calling it first is HIGHLY recommended. Would you like to call that now? [Y/n]: " response
         case "$response" in
             [yY][eE][sS]|[yY]) 
                 wget https://raw.githubusercontent.com/UCI-CCDC/CCDC2021/master/harden.sh -O harden.sh && \
@@ -185,11 +185,16 @@ a)
 
                 ;;
             *)
-                exit 1;;
+                ;;
         esac
         printf "\n"
     fi
 
+    #download harden script 
+    wget https://raw.githubusercontent.com/UCI-CCDC/CCDC/testing/Linux/ansible-setup.sh
+    echo ""
+    chmod +x ansible-setup.sh
+    bash ansible-setup.sh
 
     printf "\nExiting audit script now\n"
     exit 1;;
