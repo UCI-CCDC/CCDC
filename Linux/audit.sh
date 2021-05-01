@@ -84,7 +84,7 @@ ShouldUpdate=false
 ShouldInstall=false
 
 # this fucker is the flag statement
-while getopts :huixnsr:m: option
+while getopts :huixnsar:m: option
 do
 case "${option}" in
 h) 
@@ -101,6 +101,7 @@ h)
     printf " -s     Backups MYSQL databases and config files\n"
     printf " -r     Restore MYSQL database from backup tar archive (passed as argument)\n"
     printf " -d     Runs Debsums to check file validity on debian based systems\n"
+    printf " -a     Downloads and runs ansible installation and setup script\n"
 
     printf "\n\n\n"
     exit 1;;
@@ -116,16 +117,19 @@ x)
     harden          #calls hardening function above
     exit 1;;
 
+#automatic nmap scan
 n) 
     printf "Running NMAP command, text and visual xml output created in current directory"
     nmap -p- -Anvv -T4 -oN nmapOut.txt -oX nmapOutVisual.xml $(hostname -I | awk '{print $1}')/24
     exit 1;;
 
+#nmap with manual ip specification
 m) 
     printf "Running NMAP command with user specificed subnet, text and visual xml output created in current directory"
     nmap -p- -Anvv -T4 -oN nmapOut.txt -oX nmapOutVisual.xml $OPTARG/24
     exit 1;;
 
+#mysql backup flag
 s)
     printf "Backing up MYSQL databases and config files\n"
     
@@ -140,6 +144,7 @@ s)
 
     exit 1;;
 
+#mysql restore flag
 r)
     printf "Restoring MYSQL database from $OPTARG \n"
     #sql database recovery, not yet verified to work
@@ -157,6 +162,7 @@ r)
 
     exit 1;;
 
+#debsums flag
 d)
     printf "Checking file validity using debsums"
 
@@ -164,15 +170,35 @@ d)
 
     echo "File validity output of debsums" >> $outFile
     debsums -c | $adtfile
-
-
-
     exit 1;;
 
-#both of these are error handling. The top one handles incorrect flags, the bottom one handles when no argument is passed for a flag that requires one
+a)
+    printf "Ansible flag selected, now calling and running ansible script\n\n"
+    if ! test -f "/root/inv/harden-$(hostname)"; then
+        printf "as of May 1, 2021 harden script is not functional. Don't say yes yet.\n"
+        printf "or do, I dare you\n"
+        read -r -p "Looks like harden script has not been called yet. Calling it first is HIGHLY recommended. Would you like to call that now? [Y/n] " response
+        case "$response" in
+            [yY][eE][sS]|[yY]) 
+                wget https://raw.githubusercontent.com/UCI-CCDC/CCDC2021/master/harden.sh -O harden.sh && \
+                bash harden.sh
+
+                ;;
+            *)
+                exit 1;;
+        esac
+        printf "\n"
+    fi
+
+
+    printf "\nExiting audit script now\n"
+    exit 1;;
+
+#handles incorrect flags, 
 \?) echo "incorrect syntax, use -h for help"
     exit 1;;
 
+#handles when no argument is passed for a flag that requires one
 :)  echo "invalid option: -$OPTARG requires an argument"
     exit 1;;
 esac
