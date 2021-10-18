@@ -79,9 +79,38 @@ harden() {
 }
 
 
+backup_config_dirs() {
+        # Takes 1 argument - Array of strings of paths that need to be backed up.
+
+        # Get paths that exist
+        local -n dir_arr=$1
+        dir_str=""
+
+        for path in ${dir_arr[@]};
+        do
+                [[ -d $path ]] && dir_str="$dir_str $path"
+                [[ -f $path ]] && dir_str="$dir_str $path"
+        done
+
+        [ -z "$dir_str" ] && echo "Could not backup files. No valid paths in array." && return
+
+        # Make backup in /Backups directory in Home
+        mkdir -p ~/Backups
+        version="$(find ~/Backups -name "$HOSTNAME-config-dir-backup-[0-9]*\.tgz" | wc -l)"
+        tar -czf ~/Backups/$HOSTNAME-config-dir-backup-$version.tgz $dir_str
+}
+
+
+
 #below should both be false
 ShouldUpdate=false
 ShouldInstall=false
+
+# To see if this is the first time running the script.
+# Useful for backing up config directories.
+[[ ! -e ./auditlog.log ]] && touch auditlog.log && echo 0 > auditlog.log
+timesRun=$(echo $(head -n 1 "./audit.log") + 1 | bc -l)
+echo $timesRun > auditlog.log
 
 # this fucker is the flag statement
 while getopts :huixnsr:m: option
@@ -128,7 +157,11 @@ m)
 
 s)
     printf "Backing up MYSQL databases and config files\n"
-    
+    # Config File Backups
+    paths=("~/var/www/html" "~/etc/nginx" "pam")  # add other files that need backup here
+    [[ $timesRun == 1 ]] && backup_config_files paths  # backup if this is the first time running audit.sh
+
+    # SQL backups    
     mkdir -p $HOME/sql-backup
         
     read -s -p "Enter root password for mysql database  " pass
