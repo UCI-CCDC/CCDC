@@ -17,6 +17,10 @@ fi
 #functions to make shit prettier
 banner () { printf "========================================================\n"; }
 
+# add other files that need backup here
+COMMON_CONFIG_PATHS=("~/var/www/html" "~/etc/nginx" "pam")
+
+
 #actual functions for actual things
 updateOS() {
     
@@ -88,11 +92,13 @@ backup_config_dirs() {
 
         for path in ${dir_arr[@]};
         do
+		# Add path to string if it is a directory or file
                 [[ -d $path ]] && dir_str="$dir_str $path"
                 [[ -f $path ]] && dir_str="$dir_str $path"
         done
-
-        [ -z "$dir_str" ] && echo "Could not backup files. No valid paths in array." && return
+	
+	# Don't do anything if string is empty (None of the paths exist for current user)
+        [ -z "$dir_str" ] && echo "No backup Created. User does not have any of the specified files." && return
 
         # Make backup in /Backups directory in Home
         mkdir -p ~/Backups
@@ -108,7 +114,7 @@ ShouldInstall=false
 
 # To see if this is the first time running the script.
 # Useful for backing up config directories.
-[[ ! -e ./auditlog.log ]] && touch auditlog.log && echo 0 > auditlog.log
+[[ ! -e ./auditlog.log ]] && touch auditlog.log && echo 0 > auditlog.log # This is only 0 temporarily if the log didn't exist yet.
 timesRun=$(echo $(head -n 1 "./audit.log") + 1 | bc -l)
 echo $timesRun > auditlog.log
 
@@ -158,8 +164,7 @@ m)
 s)
     printf "Backing up MYSQL databases and config files\n"
     # Config File Backups
-    paths=("~/var/www/html" "~/etc/nginx" "pam")  # add other files that need backup here
-    [[ $timesRun == 1 ]] && backup_config_files paths  # backup if this is the first time running audit.sh
+    [[ $timesRun == 1 ]] && backup_config_dirs COMMON_CONFIG_PATHS  # backup if this is the first time running audit.sh
 
     # SQL backups    
     mkdir -p $HOME/sql-backup
