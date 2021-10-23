@@ -219,7 +219,7 @@ echo '
  //     \ |‾‾‾\_ |     ‾‾
 //      _\|    _\|
 
-      zot zot, thots.'
+        zoot zoot!'
 
 
 #generate inv directory, audit.txt, and set up variables for redirection
