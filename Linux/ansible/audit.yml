@@ -1,0 +1,18 @@
+- name: Run Audit Script on Inventory Hosts
+  hosts: all
+  become: true
+  vars:
+    op: "{{ operation }}"
+    debianPackages: "sudo nmap tmux vim hostname htop clamav lynis debsums"
+  tasks:
+    - name: Display help
+      script: ../audit.sh -h
+      register: output
+      when: op == "h"
+    
+    - name: Install Debian packages
+      command: apt-get install {{ debianPackages }} -y -q
+      register: output
+      when: op == "i" and ansible_os_family == "Debian" 
+
+    - debug: msg="{{ output }}"
