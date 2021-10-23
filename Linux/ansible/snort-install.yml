@@ -1,0 +1,9 @@
+- name: Run Snort Install Script on Inventory Hosts
+  hosts: all
+  become: true
+  tasks:
+  - name: run the install snort script
+    script: ../snort-install.sh
+    register: output
+  - debug: msg="{{ output.stdout_lines }}"
+  - debug: msg="{{ output.stderr_lines }}"
