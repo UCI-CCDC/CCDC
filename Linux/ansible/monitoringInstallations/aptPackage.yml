@@ -1,0 +1,23 @@
+- name: Make Directory
+  file:
+    path: /var/ansible
+    state: directory
+  register: output0
+  
+- debug: msg="{{ output0 }}"
+
+- name: Copy files to remote system
+  copy:
+    src: "{{ item }}"
+    dest: /var/ansible/
+  loop: "{{ DEB }}"
+  register: output1
+
+- debug: msg="{{ output1 }}"
+
+- name: Install the files in that path
+  command: "dpkg -i /var/ansible/{{ item }}"
+  loop: "{{ DEB }}"
+  register: output2
+
+- debug: msg="{{ output2 }}"
