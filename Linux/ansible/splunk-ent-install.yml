@@ -1,9 +1,0 @@
-- name: Run Splunk Ent Install Script on Inventory Hosts
-  hosts: all
-  become: true
-  tasks:
-  - name: run the install splunk-ent-install script
-    script: ../splunk-ent-install.sh
-    register: output
-  - debug: msg="{{ output.stdout_lines }}"
-  - debug: msg="{{ output.stderr_lines }}"
