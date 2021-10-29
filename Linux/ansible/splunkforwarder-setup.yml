@@ -1,9 +1,0 @@
-- name: Run Splunk Forwarder Setup Script on Inventory Hosts
-  hosts: all
-  become: true
-  tasks:
-  - name: run the install splunkforwarder-setup script
-    script: ../splunkforwarder-setup.sh
-    register: output
-  - debug: msg="{{ output.stdout_lines }}"
-  - debug: msg="{{ output.stderr_lines }}"
