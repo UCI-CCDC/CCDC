@@ -3,11 +3,12 @@
   become: true
   vars:
     op: "{{ operation }}"
+    wazuhManager: "{{ WAZUH_MANAGER }}" 
     aptPackages: "sudo nmap tmux vim hostname htop clamav lynis debsums"
     otherPackages: "sudo nmap tmux vim hostname htop clamav lynis"
     DEB: 
       - osquery_4.5.1_1.linux.amd64.deb
-      - wazuh-agent_3.9.5-1_amd64.deb
+      - wazuh-agent_4.2.4-1_amd64.deb
   tasks:
     # install packages
     - include: ./packageInstallations/aptPackage.yml
