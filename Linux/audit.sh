@@ -211,24 +211,30 @@ d)
     exit 1;;
 
 a)
-    printf "Ansible flag selected, now calling and running ansible script\n\n"
-    if ! test -f "/root/inv/harden-$(hostname)"; then
-        printf "as of May 1, 2021 harden script is not functional. Don't say yes yet.\n"
-        printf "or do, I dare you\n"
-        read -r -p "Looks like harden script has not been called yet. Calling it first is HIGHLY recommended. Would you like to call that now? [Y/n]: " response
-        case "$response" in
-            [yY][eE][sS]|[yY]) 
-                wget https://raw.githubusercontent.com/UCI-CCDC/CCDC2021/master/harden.sh -O harden.sh && \
-                bash harden.sh
+    printf "Ansible flag selected, fetching Ansible script\n\n"
 
-                ;;
-            *)
-                ;;
-        esac
-        printf "\n"
-    fi
+# this block of commented code will check if the harden script has been run on the machine. 
+#   if not, it'll ask the user if they want to run it, and then download it and run it. 
+#   it's a good idea to have something like this here bc the management machine needs to be 
+#   as secure as possible. 
+#
+#    if ! test -f "/root/inv/harden-$(hostname)"; then
+#        printf "as of May 1, 2021 harden script is not functional. Don't say yes yet.\n"
+#        printf "or do, I dare you\n"
+#        read -r -p "Looks like harden script has not been called yet. Calling it first is HIGHLY recommended. Would you like to call that now? [Y/n]: " response
+#        case "$response" in
+#            [yY][eE][sS]|[yY]) 
+#                wget https://raw.githubusercontent.com/UCI-CCDC/CCDC2021/master/harden.sh -O harden.sh && \
+#                bash harden.sh
+#
+#                ;;
+#            *)
+#                ;;
+#        esac
+#        printf "\n"
+#    fi
 
-    #download harden script 
+    #download ansible script
     wget https://raw.githubusercontent.com/UCI-CCDC/CCDC/testing/Linux/ansible-setup.sh
     echo ""
     chmod +x ansible-setup.sh

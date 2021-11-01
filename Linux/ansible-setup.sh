@@ -20,15 +20,18 @@ banner () { printf "========================================================\n";
 
 #generate inv/ dir if doesn't already exist; define outfile for script output
 mkdir -p /root/inv/ 
-outFile="$HOME/inv/ansiblescriptlog-$(hostname).txt"
+outFile="/root/inv/ansiblescriptlog-$(hostname).txt"
 adtfile="tee -a /root/inv/ansiblescriptlog-$(hostname).txt"
 touch $outFile
 
+# define basic vars for script usage
+LINUX_IPS=$(cat /root/setup/linux_IPs.txt)
 
 ######################################################
 #before script execution, we need to be as sure as possible the machine is clean and secure
 #centralization bad, but also good
 ######################################################
+
 
 
 # check if ansible is installed. If not, install it. 
@@ -58,13 +61,24 @@ if ! ansible_location="$(type -p "ansible")" || [[ -z $ansible_location]]; then
 fi
  
 # generate ssh key for ansible to use for login, no interaction needed
-# ssh keygen, rsa, no password, named ansible-key, comment ansible-key
-ssh-keygen -t rsa -N "" -f "/root/.ssh/ansible-key" -C "ansible-key"
+ssh-keygen -q -t rsa -f "/root/.ssh/ansible-key" -C "ansible-key" -N '' <<< $'\ny' >/dev/null 2>&1
+
+if command -v ssh-copy-id  &> /dev/null; then
+    #run ssh copy id for each machine in IP list
+    for IP in $LINUX_IPS; do
+        ssh-copy-id -i /root/.ssh/id_rsa.pub "$IP"
+    done
+
+else
+    echo "ssh-copy-id command not valid, keys not deployed"
+if
 
 
 
-#figure out hosts somehow? ability to use csv, textfile with ips to import already known, and then run from there?
 #also build capability to take nmap scan output, determine os, and add to hosts based on that
 
+# for ansible/wazuh installation:
+# * MUST make sure machine has sudo installed, othewise install will fail. 
 
-# ssh-copy-id 
+
+
