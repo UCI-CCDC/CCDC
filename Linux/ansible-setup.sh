@@ -57,3 +57,14 @@ if ! ansible_location="$(type -p "ansible")" || [[ -z $ansible_location]]; then
     fi
 fi
  
+# generate ssh key for ansible to use for login, no interaction needed
+# ssh keygen, rsa, no password, named ansible-key, comment ansible-key
+ssh-keygen -t rsa -N "" -f "/root/.ssh/ansible-key" -C "ansible-key"
+
+
+
+#figure out hosts somehow? ability to use csv, textfile with ips to import already known, and then run from there?
+#also build capability to take nmap scan output, determine os, and add to hosts based on that
+
+
+# ssh-copy-id 
