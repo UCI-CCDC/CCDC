@@ -17,6 +17,10 @@ fi
 #functions to make shit prettier
 banner () { printf "========================================================\n"; }
 
+# add other files that need backup here
+COMMON_CONFIG_PATHS=("~/var/www/html" "~/etc/nginx" "pam")
+
+
 #actual functions for actual things
 updateOS() {
     
@@ -79,9 +83,40 @@ harden() {
 }
 
 
+backup_config_dirs() {
+        # Takes 1 argument - Array of strings of paths that need to be backed up.
+
+        # Get paths that exist
+        local -n dir_arr=$1
+        dir_str=""
+
+        for path in ${dir_arr[@]};
+        do
+		# Add path to string if it is a directory or file
+                [[ -d $path ]] && dir_str="$dir_str $path"
+                [[ -f $path ]] && dir_str="$dir_str $path"
+        done
+	
+	# Don't do anything if string is empty (None of the paths exist for current user)
+        [ -z "$dir_str" ] && echo "No backup Created. User does not have any of the specified files." && return
+
+        # Make backup in /Backups directory in Home
+        mkdir -p ~/Backups
+        version="$(find ~/Backups -name "$HOSTNAME-config-dir-backup-[0-9]*\.tgz" | wc -l)"
+        tar -czf ~/Backups/$HOSTNAME-config-dir-backup-$version.tgz $dir_str
+}
+
+
+
 #below should both be false
 ShouldUpdate=false
 ShouldInstall=false
+
+# To see if this is the first time running the script.
+# Useful for backing up config directories.
+[[ ! -e ./auditlog.log ]] && touch auditlog.log && echo 0 > auditlog.log # This is only 0 temporarily if the log didn't exist yet.
+timesRun=$(echo $(head -n 1 "./audit.log") + 1 | bc -l)
+echo $timesRun > auditlog.log
 
 # this fucker is the flag statement
 while getopts :huixnsar:m: option
@@ -132,7 +167,10 @@ m)
 #mysql backup flag
 s)
     printf "Backing up MYSQL databases and config files\n"
-    
+    # Config File Backups
+    [[ $timesRun == 1 ]] && backup_config_dirs COMMON_CONFIG_PATHS  # backup if this is the first time running audit.sh
+
+    # SQL backups    
     mkdir -p $HOME/sql-backup
         
     read -s -p "Enter root password for mysql database  " pass
