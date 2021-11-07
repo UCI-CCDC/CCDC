@@ -7,14 +7,16 @@ import os.path
 import random
 import sys
 
-try:
-    import Cryptodome
-except ModuleNotFoundError:
-    print("Could not find module pycryptodomex")
-    print("pip install pycryptodomex")
-    print(
-        "offline install: pip install pycryptodomex-3.11.0-cp35-abi3-manylinux1_x86_64.whl"
-    )
+if __name__ == "__main__":
+    try:
+        import Cryptodome
+    except ModuleNotFoundError:
+        print("Could not find module pycryptodomex")
+        print("pip install pycryptodomex")
+        print(
+            "offline install: pip install pycryptodomex-3.11.0-cp35-abi3-manylinux1_x86_64.whl"
+        )
+        sys.exit(1)
 
 import Cryptodome.Cipher.ChaCha20
 import Cryptodome.Hash.SHA512
@@ -28,9 +30,11 @@ DIGITS = "234579"  # no 0, 1, 6, 8
 SPECIAL = "!@#$%^&*()-=?"
 
 ALPHABETS = (UPPERCASE, LOWERCASE, DIGITS, SPECIAL)
-ALPHABET = "".join(ALPHABETS)
+# ALPHABET = "".join(ALPHABETS)
+ALPHABET = UPPERCASE * 3 + LOWERCASE * 3 + DIGITS * 2 + SPECIAL
 
-HKDF_SALT = b"UCI Anteaters"
+HKDF_SALT_NONCE = b"UCI Anteaters Passwords"
+HKDF_SALT_KEY = b"UCI Anteaters Key"
 CHACHA_LENGTH_NONCE = 24
 CHACHA_LENGTH_KEY = 32
 
@@ -47,9 +51,19 @@ MAX_PASSWORDS = 680
 PASSWORD_LENGTH = 16
 
 # returns size MAX_PASSWORDS list of CHACHA_LENGTH_NONCE-byte nonces
-def hkdf(key):
+def hkdf_nonces(seed):
     return Cryptodome.Protocol.KDF.HKDF(
-        key, CHACHA_LENGTH_NONCE, HKDF_SALT, Cryptodome.Hash.SHA512, MAX_PASSWORDS
+        seed,
+        CHACHA_LENGTH_NONCE,
+        HKDF_SALT_NONCE,
+        Cryptodome.Hash.SHA512,
+        MAX_PASSWORDS,
+    )
+
+
+def hkdf_key(seed):
+    return Cryptodome.Protocol.KDF.HKDF(
+        seed, CHACHA_LENGTH_KEY, HKDF_SALT_KEY, Cryptodome.Hash.SHA512, 1
     )
 
 
@@ -87,13 +101,13 @@ class ChaChaRandom(random.Random):
         return x >> (numbytes * 8 - k)
 
     def random(self):
-        raise NotImplemented
+        raise NotImplementedError
 
     def getstate(self):
-        raise NotImplemented
+        raise NotImplementedError
 
     def setstate(self, _state):
-        raise NotImplemented
+        raise NotImplementedError
 
 
 def generate_seed():
@@ -157,8 +171,8 @@ def main():
 
     seed = Cryptodome.Util.RFC1751.english_to_key(passphrase)
 
-    key = Cryptodome.Hash.SHA256.new(seed).digest()
-    nonces = hkdf(seed)
+    key = hkdf_key(seed)
+    nonces = hkdf_nonces(seed)
 
     for i in range(10):
         print(generate_password(key, nonces, i))
