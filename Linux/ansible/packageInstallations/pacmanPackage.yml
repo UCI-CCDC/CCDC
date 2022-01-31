@@ -1,5 +1,0 @@
-- name: Install pacman packages
-  command: yes | pacman -S {{ otherPackages }}
-  register: output
-
-- debug: msg="{{ output }}"

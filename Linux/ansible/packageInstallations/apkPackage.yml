@@ -1,5 +1,0 @@
-- name: Install packages by apk
-  command: apk update && apk upgrade && apk add bash vim man-pages mdocml-apropos bash-doc bash-completion util-linux pciutils usbutils coreutils binutils findutils attr dialog dialog-doc grep grep-doc util-linux-doc pciutils usbutils binutils findutils readline lsof lsof-doc less less-doc nano nano-doc curl-doc && apk add {{ otherPackages }}
-  register: output
-
-- debug: msg="{{ output }}"
