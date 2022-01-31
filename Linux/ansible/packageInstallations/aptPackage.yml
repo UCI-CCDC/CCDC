@@ -1,5 +1,0 @@
-- name: Install apt packages
-  command: apt-get install {{ aptPackages }} -y -q
-  register: output
-
-- debug: msg="{{ output }}"

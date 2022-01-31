@@ -1,5 +1,0 @@
-- name: Install yup packages
-  command: yum -y install {{ otherPackages }}
-  register: output
-
-- debug: msg="{{ output }}"
