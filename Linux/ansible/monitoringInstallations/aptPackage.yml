@@ -1,0 +1,39 @@
+- name: Make Directory
+  file:
+    path: /var/ansible
+    state: directory
+  register: output0
+
+- debug: msg="{{ output0 }}"
+
+- name: Copy files to remote system
+  copy:
+    src: "{{ item }}"
+    dest: /var/ansible/
+  loop: "{{ DEB }}"
+  register: output1
+
+- debug: msg="{{ output1 }}"
+
+- debug: msg="{{ wazuhManager }}"
+
+# using environment variables is dangerous, someone find another solution
+- name: Install the files in that path
+  command: "dpkg -i /var/ansible/{{ item }}"
+  loop: "{{ DEB }}"
+  environment:
+    WAZUH_MANAGER: "{{ wazuhManager }}"
+    WAZUH_AGENT_GROUP: 'default'
+  register: output3
+
+- debug: msg="{{ output3 }}"
+
+- name: start wazuh agent
+  command: "{{ item }}"
+  with_items:
+  - systemctl daemon-reload
+  - systemctl enable wazuh-agent
+  - systemctl start wazuh-agent
+  register: output4
+
+- debug: msg="{{ output4 }}"
