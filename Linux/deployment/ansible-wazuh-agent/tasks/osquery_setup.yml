@@ -1,5 +1,5 @@
 ---
-  - name: Copy files to remote system
+  - name: Copy osquery.conf to remote system
     copy:
       src: "files/osquery.conf"
       dest: /etc/osquery/
