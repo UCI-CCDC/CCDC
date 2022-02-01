@@ -14,11 +14,6 @@
     - wazuh_custom_packages_installation_agent_enabled
 
 - include_tasks: "osquery_setup.yml"
-  register: osquery_conf_present
-  until: osquery_conf_present is succeeded
-  when:
-    - not osquery_conf_present
-
 
 - name: Linux CentOS/RedHat | Install wazuh-agent
   yum:
