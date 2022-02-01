@@ -21,3 +21,14 @@
         port: 1515
         ssl_agent_ca: null
         ssl_auto_negotiate: 'no'
+
+# var config changes
+    wazuh_agent_rootcheck:
+        frequency: 900
+    wazuh_agent_osquery:
+        disable: 'no'
+    wazuh_agent_syscollector:
+        interval: '30m'
+    wazuh_agent_syscheck:
+        frequency: 900
+        sync_max_interval: '20m'
