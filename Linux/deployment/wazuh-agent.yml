@@ -1,9 +1,10 @@
 ---
-- hosts: <your wazuh agents hosts>
+# REMEMBER TO ADD ALL IP ADDRS TO /etc/ansible/hosts
+- hosts: all
   become: yes
   become_user: root
   roles:
-    - ../roles/wazuh/ansible-wazuh-agent
+    - ansible-wazuh-agent
   vars:
     wazuh_managers:
       - address: <your manager IP>
