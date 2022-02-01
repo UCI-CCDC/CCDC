@@ -144,7 +144,7 @@ wazuh_agent_client_buffer:
 
 ## Rootcheck
 wazuh_agent_rootcheck:
-  frequency: 43200
+  frequency: 900
 
 ## Wodles
 wazuh_agent_openscap:
@@ -165,7 +165,7 @@ wazuh_agent_cis_cat:
   ciscat_path_win: 'C:\cis-cat'
 
 wazuh_agent_osquery:
-  disable: 'yes'
+  disable: 'no'
   run_daemon: 'yes'
   bin_path_win: 'C:\Program Files\osquery\osqueryd'
   log_path: '/var/log/osquery/osqueryd.results.log'
@@ -176,7 +176,7 @@ wazuh_agent_osquery:
 
 wazuh_agent_syscollector:
   disable: 'no'
-  interval: '1h'
+  interval: '30m'
   scan_on_start: 'yes'
   hardware: 'yes'
   os: 'yes'
@@ -197,7 +197,7 @@ wazuh_agent_sca:
 
 ## Syscheck
 wazuh_agent_syscheck:
-  frequency: 43200
+  frequency: 900
   scan_on_start: 'yes'
   auto_ignore: 'no'
   win_audit_interval: 60
@@ -209,7 +209,7 @@ wazuh_agent_syscheck:
   max_eps: 100
   sync_enabled: 'yes'
   sync_interval: '5m'
-  sync_max_interval: '1h'
+  sync_max_interval: '20m'
   sync_max_eps: 10
   ignore:
     - /etc/mtab
