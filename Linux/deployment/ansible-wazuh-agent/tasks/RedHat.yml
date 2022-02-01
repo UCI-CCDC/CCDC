@@ -1,5 +1,4 @@
 ---
-# rename to RedHat.yml to use
 - name: RedHat/CentOS 5 | Install Wazuh repo
   yum_repository:
     name: wazuh_repo

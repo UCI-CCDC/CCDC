@@ -9,7 +9,6 @@
   when:
     - wazuh_agent_sources_installation.enabled
 
-# CUSTOM PACKAGES!! 
 - include_tasks: "installation_from_custom_packages.yml"
   when:
     - wazuh_custom_packages_installation_agent_enabled
@@ -26,7 +25,6 @@
   tags:
     - init
 
-# INSTALL FROM APT
 - name: Linux Debian | Install wazuh-agent
   apt:
     name: "wazuh-agent={{ wazuh_agent_version }}"
@@ -47,7 +45,6 @@
   tags:
     - config
 
-# AGENT REGISTRATION
 - name: Linux | Agent registration via authd
   block:
 
@@ -226,7 +223,7 @@
     src: var-ossec-etc-ossec-agent.conf.j2
     dest: "{{ wazuh_dir }}/etc/ossec.conf"
     owner: root
-    group: wazuh
+    group: ossec
     mode: 0644
   notify: restart wazuh-agent
   tags:
@@ -238,7 +235,7 @@
     src: var-ossec-etc-local-internal-options.conf.j2
     dest: "{{ wazuh_dir }}/etc/local_internal_options.conf"
     owner: root
-    group: wazuh
+    group: ossec
     mode: 0640
   notify: restart wazuh-agent
   tags:
@@ -249,8 +246,8 @@
   template:
     src: authd_pass.j2
     dest: "{{ wazuh_dir }}/etc/authd.pass"
-    owner: wazuh
-    group: wazuh
+    owner: ossec
+    group: ossec
     mode: 0640
   when:
     - wazuh_agent_config.enrollment.enabled == 'yes'

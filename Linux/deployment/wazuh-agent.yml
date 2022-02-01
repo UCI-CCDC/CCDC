@@ -1,13 +1,12 @@
 ---
-- hosts: /etc/ansible/hosts
+- hosts: <your wazuh agents hosts>
   become: yes
   become_user: root
   roles:
-    - ./ansible-wazuh-agent
+    - ../roles/wazuh/ansible-wazuh-agent
   vars:
-    DEB: 
     wazuh_managers:
-      - address: <MANAGER_IP>
+      - address: <your manager IP>
         port: 1514
         protocol: tcp
         api_port: 55000
