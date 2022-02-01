@@ -121,9 +121,9 @@ d)
     debsums -c | $adtfile
     exit 1;;
 
+# install ansible server
 a)
-    printf "Ansible flag selected, fetching Ansible script\n\n"
-
+    printf "Ansible flag selected, Installing ansible server on this machine\n\n"
 
     #download ansible script
     wget https://raw.githubusercontent.com/UCI-CCDC/CCDC/testing/Linux/ansible-setup.sh
@@ -133,6 +133,20 @@ a)
 
     printf "\nExiting deployment script now\n"
     exit 1;;
+
+# wazuh server installation
+a)
+    printf "Installing wazuh manager through unattended installation script\n\n"
+
+    #download ansible script
+    wget https://raw.githubusercontent.com/UCI-CCDC/CCDC/testing/Linux/ansible-setup.sh
+    echo ""
+    chmod +x ansible-setup.sh
+    bash ansible-setup.sh
+
+    printf "\nExiting deployment script now\n"
+    exit 1;;
+
 
 #handles incorrect flags, 
 \?) echo "incorrect syntax, use -h for help"
