@@ -8,6 +8,14 @@
   register: wazuh_agent_ca_package_install
   until: wazuh_agent_ca_package_install is succeeded
 
+- name: Debian/Ubuntu | Install auditd
+  apt:
+    name:
+      - auditd
+    state: present
+  register: auditd_install
+  until: auditd_install is succeeded
+
 - name: Debian/Ubuntu | Installing Wazuh repository key (Ubuntu 14)
   become: true
   shell: |
