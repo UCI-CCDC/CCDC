@@ -10,6 +10,8 @@
 ########################################################
 
 
+# * MUST make sure machine has sudo installed, othewise install will fail. 
+
 if [[ $EUID -ne 0 ]]; then
 	printf 'Must be run as root, exiting!\n'
 	exit 1
@@ -25,7 +27,10 @@ adtfile="tee -a /root/inv/ansiblescriptlog-$(hostname).txt"
 touch $outFile
 
 # define basic vars for script usage
-LINUX_IPS=$(cat /root/setup/linux_IPs.txt)
+mkdir -p /root/setup
+linux_ip_file="/root/setup/linux_IPs.txt"
+touch $linux_ip_file
+LINUX_IPS=$(cat $linux_ip_file)
 
 ######################################################
 #before script execution, we need to be as sure as possible the machine is clean and secure
@@ -35,7 +40,7 @@ LINUX_IPS=$(cat /root/setup/linux_IPs.txt)
 
 
 # check if ansible is installed. If not, install it. 
-if ! ansible_location="$(type -p "ansible")" || [[ -z $ansible_location]]; then
+if ! command -v ansible &> /dev/null; then
     if [ $(command -v apt-get) ]; then # Debian based
         #add repo to /etc/apt/sources.list
         echo "" >> /etc/apt/sources.list
@@ -63,22 +68,19 @@ fi
 # generate ssh key for ansible to use for login, no interaction needed
 ssh-keygen -q -t rsa -f "/root/.ssh/ansible-key" -C "ansible-key" -N '' <<< $'\ny' >/dev/null 2>&1
 
-if command -v ssh-copy-id  &> /dev/null; then
-    #run ssh copy id for each machine in IP list
-    for IP in $LINUX_IPS; do
-        ssh-copy-id -i /root/.ssh/id_rsa.pub "$IP"
-    done
+#check if linux ip list file is empty
+if ! [ -s $linux_ip_file ]; then
+    # if not empty and ssh-copy id is valid, copy key to all ips in list
+    if command -v ssh-copy-id  &> /dev/null; then
+        #run ssh copy id for each machine in IP list
+        for IP in $LINUX_IPS; do
+            ssh-copy-id -i /root/.ssh/id_rsa.pub "$IP"
+        done
 
-else
-    echo "ssh-copy-id command not valid, keys not deployed"
-if
+    else
+        echo "ssh-copy-id command not valid, keys not deployed"
+    fi
+else 
+    echo "$linux_ip_file is empty, no hosts to copy pubkey to"
 
-
-
-#also build capability to take nmap scan output, determine os, and add to hosts based on that
-
-# for ansible/wazuh installation:
-# * MUST make sure machine has sudo installed, othewise install will fail. 
-
-
-
+fi
