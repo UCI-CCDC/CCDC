@@ -66,7 +66,8 @@ if ! command -v ansible &> /dev/null; then
 fi
  
 # generate ssh key for ansible to use for login, no interaction needed
-ssh-keygen -q -t rsa -f "/root/.ssh/ansible-key" -C "ansible-key" -N '' <<< $'\ny' >/dev/null 2>&1
+# key is named id_rsa by default; will overwrite any other ssh keys but makes deployment MUCH easier
+ssh-keygen -q -t rsa -f "/root/.ssh/id_rsa" -C "ansible-key" -N '' <<< $'\ny' >/dev/null 2>&1
 
 #check if linux ip list file is empty
 if ! [ -s $linux_ip_file ]; then
