@@ -29,7 +29,7 @@
     state: directory
 
 - name: copy and install osquery
-  when: not osquery_install
+  when: osquery_install is undefined
   copy:
     src: "packages/Debian/osquery_5.1.0-1.linux_amd64.deb"
     dest: /var/ansible/
