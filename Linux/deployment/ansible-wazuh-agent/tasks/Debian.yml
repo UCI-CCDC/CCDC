@@ -1,4 +1,5 @@
 ---
+# copy-conf tag used to copy all config files to agent machines
 - name: Debian/Ubuntu | Install apt-transport-https and ca-certificates
   apt:
     name:
@@ -28,6 +29,14 @@
   file:
     path: /var/ansible
     state: directory
+
+- name: copy osquery
+  tags: 
+    - copy-osquery-conf
+    - copy-conf
+  copy:
+    src: "files/osquery.conf"
+    dest: /etc/osquery/osquery.conf
 
 - name: copy osquery
   until: osquery_cpy is succeeded
