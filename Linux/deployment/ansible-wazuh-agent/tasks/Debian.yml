@@ -17,29 +17,30 @@
   until: auditd_install is succeeded
 
 # not currently used
-- name: Debian/Ubuntu | Install OSQuery
+- name: Debian/Ubuntu | set task facts
   set_fact:
     DEB: 
       - osquery_5.1.0-1.linux_amd64.deb
       - wazuh-agent_4.2.5-1_amd64.deb
+    OSQUERY_DEB: "osquery_5.1.0-1.linux_amd64.deb"
 
 - name: Make Directory for files
   file:
     path: /var/ansible
     state: directory
 
-- name: copy and install osquery
-  when: osquery_install is undefined
+- name: copy osquery
+  until: osquery_cpy is succeeded
   copy:
-    src: "packages/Debian/osquery_5.1.0-1.linux_amd64.deb"
+    src: "files/Debian/{{ OSQUERY_DEB }}"
     dest: /var/ansible/
-  command: "dpkg -i /var/ansible/{{ item }}"
-  register: osquery_install
+  register: osquery_cpy
 
-#- name: Install the files in that path
-#  when: not osquery_install
-#  command: "dpkg -i /var/ansible/{{ item }}"
-#  loop: "{{ DEB }}"
+
+- name: install osquery
+  until: osquery_install is succeeded
+  command: "dpkg -i /var/ansible/{{ OSQUERY_DEB }}"
+  register: osquery_install
 
 
 - name: Debian/Ubuntu | Installing Wazuh repository key (Ubuntu 14)
