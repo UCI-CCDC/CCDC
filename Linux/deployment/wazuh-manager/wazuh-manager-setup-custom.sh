@@ -12,10 +12,12 @@ cp files/local_rules.xml /var/ossec/ruleset/rules/local_rules.xml
 
 echo "adding agent.conf to configuration"
 cp files/agent.conf /var/ossec/etc/shared/default/agent.conf
+
 echo "adding correct permissions to agent.conf"
 chown ossec:ossec /var/ossec/etc/shared/default/agent.conf
 chmod 640 /var/ossec/etc/shared/default/agent.conf
 
+cp files/suspicious-programs.txt /var/ossec/etc/lists/suspicious-programs.txt
 
 read -r -p "do you want to restart the wazuh-manager process?" response
 case "$response" in

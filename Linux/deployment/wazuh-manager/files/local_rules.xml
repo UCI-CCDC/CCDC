@@ -57,3 +57,11 @@
       <description>osquery error message</description>
     </rule>
 </group>
+<group name="auditd">
+    <rule id="100210" level="12">
+        <if_sid>80792</if_sid>
+        <list field="audit.command" lookup="match_key_value" check_value="red">etc/lists/suspicious-programs.txt</list>
+        <description>Audit: Highly Suspicious Command executed: $(audit.exe)</description>
+        <group>audit_command,</group>
+    </rule>
+</group>

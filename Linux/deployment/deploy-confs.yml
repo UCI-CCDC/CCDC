@@ -5,12 +5,23 @@
   become: yes
   become_user: root
   tasks: 
-  - name: Copy osquery.conf to remote system
+  - name: Copy osquery.conf to agents
     copy:
       src: "ansible-wazuh-agent/files/osquery.conf"
       dest: /etc/osquery/osquery.conf
 
-  - name: Restart service osqueryd, in all cases
+  - name: Restart service osqueryd
     service:
       name: osqueryd
       state: restarted
+
+  tasks: 
+  - name: Copy audit.rules to agents
+    copy:
+      src: "ansible-wazuh-agent/files/audit.rules"
+      dest: /etc/audit/audit.rules
+
+  - name: Reload rules
+    shell: "auditctl -R /etc/audit/rules.d/audit.rules"
+
+# you can reload using auditctl -l but it's kinda pointless to put this in the script bc you won't see the output
