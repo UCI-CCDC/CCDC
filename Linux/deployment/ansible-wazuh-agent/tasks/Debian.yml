@@ -31,14 +31,6 @@
     state: directory
 
 - name: copy osquery
-  tags: 
-    - copy-osquery-conf
-    - copy-conf
-  copy:
-    src: "files/osquery.conf"
-    dest: /etc/osquery/osquery.conf
-
-- name: copy osquery
   until: osquery_cpy is succeeded
   copy:
     src: "files/Debian/{{ OSQUERY_DEB }}"
