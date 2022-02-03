@@ -1,0 +1,59 @@
+<!--
+  - custom & modified wazuh rules for CCDC usage
+  - author: jbokor@uci.edu, UCI CCDC
+  - 02/2022
+--> 
+<group name="CUSTOM RULES">
+    <rule id="100009" level="2">
+      <if_group>syscheck</if_group>
+      <field name="file">/root/.viminfo</field>
+      <match>modified</match>
+      <description>viminfo (vim history file) updated</description>
+    </rule>
+
+    <rule id="100010" level="10">
+      <if_group>syscheck</if_group>
+      <match>/etc/cron.</match>
+      <description>File changed inside Cron!</description>
+    </rule>
+
+    <rule id="100011" level="3">
+      <if_group>syscheck</if_group>
+      <match>/etc/resolv.conf</match>
+      <description>resolv.conf modified, big whoop</description>
+    </rule>
+
+    <rule id="100012" level="10">
+      <if_group>syscheck</if_group>
+      <match>/etc/pam</match>
+      <description>PAM configuration modified!</description>
+    </rule>
+
+    <rule id="100013" level="9">
+      <if_group>syscheck</if_group>
+      <match>ssh/authorized_keys</match>
+      <description>authorized_keys updated, UHOH</description>
+    </rule>
+
+<!-- read internal docs for more info if this isn't working as expected -->
+    <rule id="100014" level="12">
+      <if_group>syscheck</if_group>
+      <field name="changed_content">thug|THUG</field>
+      <match>modified</match>
+      <description>WORD "thug" HAS BEEN ADDED TO FILE</description>
+    </rule>
+
+<!-- REMOVING ANNOYING ALERTS -->
+    <rule id="24001" level="2" overwrite="yes">
+      <if_sid>24000</if_sid>
+      <regex>^E\d\d\d\d </regex>
+      <match negate="yes">already\srunning</match>
+      <description>osquery already running</description>
+    </rule>
+
+    <rule id="24900" level="5">
+      <if_sid>24000</if_sid>
+      <regex>^E\d\d\d\d </regex>
+      <description>osquery error message</description>
+    </rule>
+</group>
