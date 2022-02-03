@@ -13,7 +13,8 @@
 
     <rule id="100010" level="10">
       <if_group>syscheck</if_group>
-      <match>/etc/cron.</match>
+      <match>modified|added|deleted</match>
+      <field name="file">^/etc/cron.</field>
       <description>File changed inside Cron!</description>
     </rule>
 
@@ -55,7 +56,7 @@
     <rule id="100900" level="2">
       <if_sid>24000</if_sid>
       <regex>^E\d\d\d\d </regex>
-      <match negate="yes">already\srunning</match>
+      <match>already\srunning</match>
       <description>osquery is already running, this error is stupid</description>
     </rule>
 

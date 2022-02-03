@@ -214,6 +214,7 @@ wazuh_agent_syscheck:
   ignore:
     - /etc/mtab
     - /etc/hosts.deny
+    - /root/.viminfo
     - /etc/mail/statistics
     - /etc/random-seed
     - /etc/random.seed
