@@ -24,7 +24,8 @@ echo "modifying server ossec.conf file with location of suspicious-programs"
 if ! test -f "/var/ossec/etc/backup_ossec.conf"; then
     echo "ossec not backed up; this should be first exec of script"
     mv /var/ossec/etc/ossec.conf /var/ossec/etc/backup_ossec.conf
-    awk '/<ruleset>/ {$0=$0"\n    <list>etc/lists/suspicious-programs</list>"}1' backup_ossec.conf > ossec.conf
+    cp /var/ossec/etc/backup_ossec.conf /root/backup_ossec.conf
+    awk '/<ruleset>/ {$0=$0"\n    <list>etc/lists/suspicious-programs</list>"}1' /var/ossec/etc/backup_ossec.conf > /var/ossec/etc/ossec.conf
 else
     echo "we've already modified it, nevermind"
 fi

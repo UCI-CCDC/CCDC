@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# I AM BROKEN AND DO NOT WORK YET. SORRY
+echo "this script is currently non functional. oops"
+exit 0;
+
 ########################################################
 # https://github.com/UCI-CCDC/CCDC
 #UCI CCDC linux script for automation of automation of setup
