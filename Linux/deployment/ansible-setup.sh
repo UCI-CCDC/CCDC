@@ -50,7 +50,7 @@ if ! command -v ansible &> /dev/null; then
         apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 93C4A3FD7BB9C367
         #update package lists and install it
         apt-get update -y 
-        apt install ansible
+        apt install ansible -y
 
     elif [ $(command -v yum) ]; then
         yum update

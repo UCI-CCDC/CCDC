@@ -22,6 +22,6 @@
       dest: /etc/audit/audit.rules
 
   - name: Reload rules
-    shell: "auditctl -R /etc/audit/rules.d/audit.rules"
+    shell: "auditctl -R /etc/audit/audit.rules"
 
 # you can reload using auditctl -l but it's kinda pointless to put this in the script bc you won't see the output
