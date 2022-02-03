@@ -9,22 +9,24 @@
     copy:
       src: "ansible-wazuh-agent/files/osquery.conf"
       dest: /etc/osquery/osquery.conf
+    notify: 
+      - restart wazuh-agent
+      - restart osqueryd
 
-  - name: Restart service osqueryd
-    service:
-      name: osqueryd
-      state: restarted
-
-  tasks: 
   - name: Copy audit.rules to agents
     copy:
       src: "ansible-wazuh-agent/files/audit.rules"
-      dest: /etc/audit/audit.rules
+      dest: /etc/audit/rules.d/audit.rules
+    notify: restart wazuh-agent
 
   - name: Reload rules
-    shell: "auditctl -R /etc/audit/audit.rules"
+    shell: "auditctl -R /etc/audit/rules.d/audit.rules"
 
-- name: restart wazuh-agent
-  service: name=wazuh-agent state=restarted enabled=yes
+  handlers:
+    - name: restart wazuh-agent
+      service: name=wazuh-agent state=restarted enabled=yes
+
+    - name: restart osqueryd
+      service: name=osqueryd state=restarted enabled=yes
 
 # you can reload using auditctl -l but it's kinda pointless to put this in the script bc you won't see the output
