@@ -1,0 +1,7 @@
+ncat:red
+nc:red
+tcpdump:orange
+ping:yellow
+mysqldump:red
+scp:yellow
+nmap:red
