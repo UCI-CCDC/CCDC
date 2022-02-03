@@ -17,9 +17,10 @@ echo "adding correct permissions to agent.conf"
 chown ossec:ossec /var/ossec/etc/shared/default/agent.conf
 chmod 640 /var/ossec/etc/shared/default/agent.conf
 
+echo "copying suspicious-programs.txt"
 cp files/suspicious-programs.txt /var/ossec/etc/lists/suspicious-programs.txt
 
-read -r -p "do you want to restart the wazuh-manager process?" response
+read -r -p "do you want to restart the wazuh-manager process?: " response
 case "$response" in
     [yY][eE][sS]|[yY]) 
         systemctl restart wazuh-manager
