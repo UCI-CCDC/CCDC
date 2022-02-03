@@ -24,4 +24,7 @@
   - name: Reload rules
     shell: "auditctl -R /etc/audit/audit.rules"
 
+- name: restart wazuh-agent
+  service: name=wazuh-agent state=restarted enabled=yes
+
 # you can reload using auditctl -l but it's kinda pointless to put this in the script bc you won't see the output
