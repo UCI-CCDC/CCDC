@@ -44,7 +44,7 @@ if ! command -v ansible &> /dev/null; then
     if [ $(command -v apt-get) ]; then # Debian based
         #add repo to /etc/apt/sources.list
         echo "" >> /etc/apt/sources.list
-        echo "deb http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main"
+        echo "deb http://ppa.launchpad.net/ansible/ansible/ubuntu bionic main"
         #gnupg is required for key add procedure
         apt install gnupg -y
         apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 93C4A3FD7BB9C367

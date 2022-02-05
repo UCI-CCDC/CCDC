@@ -30,7 +30,7 @@
     path: /var/ansible
     state: directory
 
-- name: copy osquery
+- name: Debian | copy osquery
   until: osquery_cpy is succeeded
   copy:
     src: "files/Debian/{{ OSQUERY_DEB }}"
@@ -38,7 +38,7 @@
   register: osquery_cpy
 
 
-- name: install osquery
+- name: Debian | install osquery
   until: osquery_install is succeeded
   command: "dpkg -i /var/ansible/{{ OSQUERY_DEB }}"
   register: osquery_install

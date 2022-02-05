@@ -1,7 +1,7 @@
 # auditd rules
 
-Remove any existing rules
--D
+# Remove any existing rules
+ -D
 
 # Buffer Size
 ## Feel free to increase this if the machine panic's
@@ -13,9 +13,9 @@ Remove any existing rules
 
 # Ignore errors
 ## e.g. caused by users or files not found in the local environment  
-log all changes to /etc/passwd
-
+# log all changes to /etc/passwd
 -w /etc/passwd -p wa -k passwd_changes
+
 # log executions of insmod, which allow insertion of modules into kernel
 -w /sbin/insmod -p x -k module_insertion
 
