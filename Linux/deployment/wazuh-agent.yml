@@ -7,7 +7,7 @@
     - ansible-wazuh-agent
   vars:
     wazuh_managers:
-      - address: <MANAGER_IP>
+      - address: 3.15.39.169
         port: 1514
         protocol: tcp
         api_port: 55000
@@ -16,7 +16,7 @@
         max_retries: 5
         retry_interval: 5
     wazuh_agent_authd:
-        registration_address: <MANAGER_IP>
+        registration_address: 3.15.39.169
         enable: true
         port: 1515
         ssl_agent_ca: null

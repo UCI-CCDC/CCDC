@@ -1,6 +1,6 @@
 ---
 - include_tasks: "RedHat.yml"
-  when: ansible_os_family == "RedHat"
+  when: ansible_os_family|lower in ['redhat','rocky']
 
 - include_tasks: "Debian.yml"
   when: ansible_os_family == "Debian"
@@ -14,6 +14,7 @@
     - wazuh_custom_packages_installation_agent_enabled
 
 - include_tasks: "osquery_setup.yml"
+  when: 
 
 - name: Linux CentOS/RedHat | Install wazuh-agent
   yum:
@@ -21,7 +22,7 @@
     state: present
     lock_timeout: '{{ wazuh_agent_yum_lock_timeout }}'
   when:
-    - ansible_os_family|lower == "redhat"
+    - ansible_os_family|lower in ['redhat','rocky']
     - not wazuh_agent_sources_installation.enabled
     - not wazuh_custom_packages_installation_agent_enabled
   tags:
@@ -33,7 +34,7 @@
     state: present
     cache_valid_time: 3600
   when:
-    - ansible_os_family|lower != "redhat"
+    - ansible_os_family|lower not in ['redhat','rocky']
     - not wazuh_agent_sources_installation.enabled
     - not wazuh_custom_packages_installation_agent_enabled
     - not ansible_check_mode
@@ -267,7 +268,7 @@
 
 - include_tasks: "RMRedHat.yml"
   when:
-    - ansible_os_family == "RedHat"
+    - ansible_os_family|lower in ['redhat','rocky']
     - not wazuh_agent_sources_installation.enabled
 
 - include_tasks: "RMDebian.yml"

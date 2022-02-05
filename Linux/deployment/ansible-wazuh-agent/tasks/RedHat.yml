@@ -8,11 +8,51 @@
     gpgcheck: true
   changed_when: false
   when:
-    - (ansible_facts['os_family']|lower == 'redhat') and (ansible_distribution|lower != 'amazon')
+    - (ansible_facts['os_family']|lower in ['redhat','rocky']) and (ansible_distribution|lower != 'amazon')
     - (ansible_distribution_major_version|int <= 5)
     - not wazuh_agent_sources_installation.enabled
     - not wazuh_custom_packages_installation_agent_enabled
   register: repo_v5_installed
+
+- name: RedHat/CentOS/Fedora | Install auditd
+  yum:
+    name:
+      - audit
+      - audit-libs
+    state: latest
+  register: auditd_install
+  until: auditd_install is succeeded
+
+- name: RedHat/CentOS/Fedora | set task facts
+  set_fact:
+    RPM:
+      - osquery-5.1.0-1.linux.x86_64.rpm
+      - wazuh-agent-4.2.5-1.x86_64.rpm
+    OSQUERY_RPM: "osquery-5.1.0-1.linux.x86_64.rpm"
+
+- name: check to see what packages are installed
+  package_facts:
+    manager: "auto"
+
+- name: Redhat | Make Directory for files
+  file:
+    path: /var/ansible
+    state: directory
+
+- name: Redhat | copy osquery
+  until: osquery_cpy is succeeded
+  copy:
+    src: "files/RedHat/{{ OSQUERY_RPM }}"
+    dest: /var/ansible
+  register: osquery_cpy
+
+# will never "succeed" because its rpm
+- name: Redhat | install osquery
+  when: "'osquery' not in ansible_facts.packages"
+  register: osquery_install
+  shell: "rpm -i /var/ansible/{{ OSQUERY_RPM }}"
+  args:
+    warn: no
 
 - name: RedHat/CentOS/Fedora | Install Wazuh repo
   yum_repository:

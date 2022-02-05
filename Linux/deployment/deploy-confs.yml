@@ -18,9 +18,15 @@
       src: "ansible-wazuh-agent/files/audit.rules"
       dest: /etc/audit/rules.d/audit.rules
     notify: restart wazuh-agent
+    
+# runs all handlers at this point, means auditctl should work correctly
+  - name: Flush Handlers
+    meta: flush_handlers
 
+# MUST call reload prior to restarting wazuh agent, because auditctl reload will remove all rules
   - name: Reload rules
     shell: "auditctl -R /etc/audit/rules.d/audit.rules"
+    notify: restart wazuh-agent
 
   handlers:
     - name: restart wazuh-agent
@@ -28,5 +34,3 @@
 
     - name: restart osqueryd
       service: name=osqueryd state=restarted enabled=yes
-
-# you can reload using auditctl -l but it's kinda pointless to put this in the script bc you won't see the output
