@@ -1,9 +1,6 @@
 #!/bin/bash
 
 # basic setup of wazuh manager machine
-# run this AFTER installing wazuh manager
-# this might end up in an ansible playbook, idk
-
 
 echo "setting up wazuh manager configuration"
 
@@ -17,19 +14,21 @@ echo "adding correct permissions to agent.conf"
 chown ossec:ossec /var/ossec/etc/shared/default/agent.conf
 chmod 640 /var/ossec/etc/shared/default/agent.conf
 
-echo "copying suspicious-programs"
+echo "copying suspicious-programs list to location"
 cp files/suspicious-programs /var/ossec/etc/lists/suspicious-programs
 
 echo "modifying server ossec.conf file with location of suspicious-programs"
 if ! test -f "/var/ossec/etc/backup_ossec.conf"; then
-    echo "ossec not backed up; this should be first exec of script"
+    echo "ossec not backed up yet; this should be first exec of script"
     mv /var/ossec/etc/ossec.conf /var/ossec/etc/backup_ossec.conf
-    cp /var/ossec/etc/backup_ossec.conf /root/backup_ossec.conf
+    cp /var/ossec/etc/backup_ossec.conf /root/backup_ossec-$(date +"%H:%M").conf
     awk '/<ruleset>/ {$0=$0"\n    <list>etc/lists/suspicious-programs</list>"}1' /var/ossec/etc/backup_ossec.conf > /var/ossec/etc/ossec.conf
 else
     echo "we've already modified it, nevermind"
 fi
 
+echo "install packages that help in troubleshooting"
+apt-get install tree -y
 
 read -r -p "do you want to restart the wazuh-manager process?: " response
 case "$response" in
