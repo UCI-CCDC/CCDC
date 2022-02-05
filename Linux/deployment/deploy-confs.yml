@@ -27,6 +27,7 @@
   - name: Reload rules
     shell: "auditctl -R /etc/audit/rules.d/audit.rules"
     notify: restart wazuh-agent
+#    ignore_errors: yes # this line shouldn't be needed if auditctl is configured correctly
 
   handlers:
     - name: restart wazuh-agent
@@ -34,3 +35,6 @@
 
     - name: restart osqueryd
       service: name=osqueryd state=restarted enabled=yes
+
+    - name: restart auditd
+      service: name=auditd state=restarted enabled=yes
