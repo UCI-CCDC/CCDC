@@ -1,0 +1,17 @@
+# Explicitly add TLS1.2 support
+[Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
+
+# Download the zip file
+(New-Object System.Net.WebClient).DownloadFile("https://github.com/PowerShell/Win32-OpenSSH/releases/download/V8.6.0.0p1-Beta/OpenSSH-Win64.zip", "C:\Users\Administrator\Downloads\OpenSSH-Win64.zip")
+
+# Extract Archive
+Expand-Archive -LiteralPath OpenSSH-Win64.zip -DestinationPath "C:/Program Files/OpenSSH"
+
+# Execute script to install
+.\install-sshd.ps1
+
+# Auto run
+Set-Service sshd -StartupType Automatic; Set-Service ssh-agent -StartupType Automatic; Start-Service sshd; Start-Service ssh-agent
+
+# Allow firewall
+New-NetFirewallRule -DisplayName "OpenSSH Allow" -Direction inbound -Profile Any -Action Allow -LocalPort 22 -Protocol TCP
