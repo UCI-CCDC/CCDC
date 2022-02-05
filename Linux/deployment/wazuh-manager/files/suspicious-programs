@@ -1,0 +1,15 @@
+ncat:red
+nc:red
+tcpdump:orange
+mysqldump:red
+scp:yellow
+nmap:red
+whoami:orange
+dmesg:yellow
+telnet:red
+gcc:orange
+passwd:orange
+sudo:orange
+ifconfig:orange
+tshark:orange
+john:red
