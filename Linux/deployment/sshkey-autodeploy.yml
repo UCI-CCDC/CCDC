@@ -1,0 +1,18 @@
+---
+# This playbook is used to copy ssh public key configuration to multiple machines at once. 
+# Run it using `ansible-playbook -i inventory sshkey_autodeploy.yml -u "$USER" -k
+# REMEMBER TO ADD ALL IP ADDRS TO /etc/ansible/hosts
+- hosts: all
+  become: yes
+  become_user: root
+  tasks: 
+  - authorized_key: Upload SSH key to hosts
+    user: root
+    state: present
+    manage_dir: yes
+    key: "{{ lookup('file', '/root/.ssh/id_rsa.pub') }}"
+
+#  - name: manual transfer (can replace anything already in there, be careful)
+#    copy:
+#      src: "/root/.ssh/id_rsa.pub"
+#      dest: "/root/.ssh/authorized_keys"
