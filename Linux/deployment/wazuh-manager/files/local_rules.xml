@@ -44,7 +44,7 @@
     </rule>
 
     <rule id="100010" level="10">
-      <if_sid>550</if_sid>
+      <if_group>syscheck</if_group>
       <match>modified|added|deleted</match>
       <field name="file">^/etc/cron.</field>
       <description>File changed inside Cron!</description>
@@ -59,7 +59,6 @@
     <rule id="100012" level="10">
       <if_group>syscheck</if_group>
       <field name="file">/etc/pam</field>
-      <match>/etc/resolv.conf</match>
       <description>PAM configuration modified!</description>
     </rule>
 
