@@ -82,7 +82,6 @@
       <field name="file">^/bin | ^/usr/bin</field>
       <description>User-level binary file changed!</description>
     </rule>
-      <if_group>syscheck</if_group>
 
     <rule id="100016" level="8">
       <if_group>syscheck</if_group>
