@@ -13,3 +13,8 @@ sudo:orange
 ifconfig:orange
 tshark:orange
 john:red
+usermod:red
+useradd:red
+nohup:yellow
+base64:orange
+chmod:yellow

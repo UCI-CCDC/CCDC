@@ -24,6 +24,11 @@
 -a always,exit -F arch=b32 -S unlink -S unlinkat -S rename -S renameat -F auid>=500 -F auid!=4294967295 -k delete
 -a always,exit -F arch=b64 -S unlink -S unlinkat -S rename -S renameat -F auid>=500 -F auid!=4294967295 -k delete
 
+
+# logs any syscalls attempting to change user id to 0
+-a always,exit -S setresuid -F euid=0 -k audit-wazuh-c
+
+# Monitor all commands run by user with admin priveleges
 # removed "-F auid=1000" parameter after always, used to specify EUID of user executing program
 -a exit,always  -F egid!=994 -F auid!=-1 -F arch=b32 -S execve -k audit-wazuh-c
 -a exit,always  -F egid!=994 -F auid!=-1 -F arch=b64 -S execve -k audit-wazuh-c

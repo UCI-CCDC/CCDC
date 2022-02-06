@@ -27,6 +27,16 @@ else
     echo "we've already modified it, nevermind"
 fi
 
+# https://documentation.wazuh.com/current/user-manual/capabilities/system-calls-monitoring/audit-configuration.html
+echo "adding custom audit cdb keys to /var/ossec/etc/lists/audit-keys"
+if ! test -f "/root/.audit-keys-old"; then
+    echo "audit-keys haven't been updated yet! updating now"
+    cp /var/ossec/etc/lists/audit-keys /root/.audit-keys-old
+    cat files/audit-keys >> /var/ossec/etc/lists/audit-keys
+else
+    echo "we've already added our cdb keys, nevermind"
+fi
+
 echo "install packages that help in troubleshooting"
 apt-get install tree -y
 
