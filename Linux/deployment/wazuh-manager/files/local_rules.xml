@@ -65,7 +65,7 @@
 
     <rule id="100012" level="10">
       <if_group>syscheck</if_group>
-      <field name="file">/etc/pam</file>
+      <field name="file">/etc/pam</field>
       <description>PAM configuration modified!</description>
     </rule>
 
@@ -86,39 +86,22 @@
 
     <rule id="100015" level="6">
       <if_group>syscheck</if_group>
-      <field name="file">^/bin | ^/usr/bin</file>
+      <field name="file">^/bin | ^/usr/bin</field>
       <description>User-level binary file changed!</description>
     </rule>
 
     <rule id="100016" level="8">
       <if_group>syscheck</if_group>
-      <field name="file">^/sbin | ^/usr/sbin</file>
+      <field name="file">^/sbin | ^/usr/sbin</field>
       <description>Superuser binary file changed!</description>
     </rule>
 
     <rule id="100017" level="6">
       <if_group>syscheck</if_group>
-      <field name="file">/etc/apt</file>
+      <field name="file">/etc/apt</field>
       <description>Apt configuration files updated</description>
     </rule>
 
-    <rule id="100018" level="7">
-      <if_group>syscheck</if_group>
-      <field name="file"></file>
-      <description></description>
-    </rule>
-
-    <rule id="100019" level="7">
-      <if_group>syscheck</if_group>
-      <field name="file"></file>
-      <description></description>
-    </rule>
-
-    <rule id="100020" level="7">
-      <if_group>syscheck</if_group>
-      <field name="file"></file>
-      <description></description>
-    </rule>
 <!-- OSQUERY -->
   <rule id="100901" level="4">
     <if_sid>24010</if_sid>
