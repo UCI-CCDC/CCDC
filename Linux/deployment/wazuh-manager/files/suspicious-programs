@@ -17,4 +17,3 @@ usermod:red
 useradd:red
 nohup:yellow
 base64:orange
-chmod:yellow

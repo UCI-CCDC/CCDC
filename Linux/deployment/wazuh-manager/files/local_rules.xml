@@ -96,10 +96,10 @@
     </rule>
 
 <!-- OSQUERY -->
-  <rule id="100901" level="6" frequency="1" timeframe="60">
-    <if_matched_sid>24010</if_matched_sid>
+  <rule id="100901" level="6"> <!-- frequency="2" timeframe="3600">-->
+    <if_sid>24010</if_sid>
     <field name="osquery.name">aptsources_monitor</field>
-    <different_field>osquery.columns.base_uri</different_field> 
+<!--    <different_field>osquery.columns.base_uri osquery.columns.source</different_field> -->
     <description>osquery: change in apt sources, in $(osquery.columns.source)</description>
   </rule>
 
