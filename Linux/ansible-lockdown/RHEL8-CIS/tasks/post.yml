@@ -1,0 +1,15 @@
+---
+# Post tasks
+
+- name: Perform DNF package cleanup
+  dnf:
+      autoremove: yes
+  changed_when: no
+
+- name: flush handlers
+  meta: flush_handlers
+
+- name: Reboot host
+  reboot:
+  when:
+  - not rhel8cis_skip_reboot

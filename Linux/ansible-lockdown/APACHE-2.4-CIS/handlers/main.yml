@@ -1,0 +1,15 @@
+---
+- name: restart httpd
+  service:
+      name: httpd
+      state: restarted
+
+- name: restart apache2
+  service:
+      name: apache2
+      state: restarted
+
+- name: reboot system
+  shell: sleep 3; reboot
+  async: 15
+  poll: 0

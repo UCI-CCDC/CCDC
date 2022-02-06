@@ -10,4 +10,4 @@ git clone https://github.com/ansible-lockdown/APACHE-2.4-CIS
 git clone https://github.com/ansible-lockdown/POSTGRES-12-CIS
 
 # remove all git repository files from each dir
-find . -type d | grep -i "\.git" | xargs rm -rf
+find . -name ".git" | xargs rm -rf
