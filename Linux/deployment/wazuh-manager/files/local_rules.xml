@@ -6,7 +6,9 @@
 <group name="CUSTOM RULES">
 
 
-    <!-- MODIFIED RULES -->
+<!-- ======================================== -->
+<!-- MODIFIED RULES -->
+<!-- ======================================== -->
     <rule id="5303" level="5" overwrite="yes">
       <if_sid>5300</if_sid>
       <regex>session opened for user root|^'su root'|</regex>
@@ -28,7 +30,19 @@
       </mitre>
     </rule>
 
-    <!-- CUSTOM RULES -->
+
+
+  <rule id="80705" level="0">
+    <if_sid>80700</if_sid>
+    <field name="audit.type">CONFIG_CHANGE|DAEMON_CONFIG</field>
+    <description>Auditd: Configuration changed.</description>
+    <group>audit_configuration,gdpr_IV_30.1.g,gpg13_10.1,</group>
+  </rule>
+<!-- ======================================== -->
+<!-- CUSTOM RULES -->
+<!-- ======================================== -->
+<!-- FIM -->
+
     <rule id="100009" level="2">
       <if_group>syscheck</if_group>
       <field name="file">/root/.viminfo</field>
@@ -51,7 +65,7 @@
 
     <rule id="100012" level="10">
       <if_group>syscheck</if_group>
-      <match>/etc/pam</match>
+      <field name="file">/etc/pam</file>
       <description>PAM configuration modified!</description>
     </rule>
 
@@ -70,20 +84,57 @@
       <description>WORD "thug" HAS BEEN ADDED TO FILE</description>
     </rule>
 
+    <rule id="100015" level="6">
+      <if_group>syscheck</if_group>
+      <field name="file">^/bin | ^/usr/bin</file>
+      <description>User-level binary file changed!</description>
+    </rule>
+
+    <rule id="100016" level="8">
+      <if_group>syscheck</if_group>
+      <field name="file">^/sbin | ^/usr/sbin</file>
+      <description>Superuser binary file changed!</description>
+    </rule>
+
+    <rule id="100017" level="6">
+      <if_group>syscheck</if_group>
+      <field name="file">/etc/apt</file>
+      <description>Apt configuration files updated</description>
+    </rule>
+
+    <rule id="100018" level="7">
+      <if_group>syscheck</if_group>
+      <field name="file"></file>
+      <description></description>
+    </rule>
+
+    <rule id="100019" level="7">
+      <if_group>syscheck</if_group>
+      <field name="file"></file>
+      <description></description>
+    </rule>
+
+    <rule id="100020" level="7">
+      <if_group>syscheck</if_group>
+      <field name="file"></file>
+      <description></description>
+    </rule>
+<!-- OSQUERY -->
+  <rule id="100901" level="4">
+    <if_sid>24010</if_sid>
+    <field name="osquery.name">aptsources_monitor</field>
+    <different_field name="osquery.name">source</different_field>
+    <description>osquery: change in apt sources, in $(osquery.columns.source)</description>
+    <options>no_full_log</options>
+  </rule>
+      
 <!-- REMOVING ANNOYING ALERTS -->
-    <rule id="24001" level="2" overwrite="yes"> 
-      <if_sid>24000</if_sid> 
-      <regex>^E\d\d\d\d </regex> 
+    <rule id="101000" level="2"> 
+      <if_sid>24001</if_sid> 
+      <match>already\srunning</match>
       <description>osquery already running</description> 
     </rule>
 
-
-    <rule id="100900" level="2">
-      <if_sid>24000</if_sid>
-      <regex>^E\d\d\d\d </regex>
-      <match>already\srunning</match>
-      <description>osquery is already running, this error is stupid</description>
-    </rule>
 
 <!-- AUDITD rules -->
     <rule id="100200" level="7">
@@ -99,5 +150,7 @@
         <description>Audit: Highly Suspicious Command executed: $(audit.exe)</description>
         <group>audit_command,</group>
     </rule>
+
+
 
 </group>
