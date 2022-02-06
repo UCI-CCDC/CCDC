@@ -57,8 +57,9 @@
     </rule>
 
     <rule id="100012" level="10">
-      <if_sid>550</if_sid>
+      <if_group>syscheck</if_group>
       <field name="file">/etc/pam</field>
+      <match>/etc/resolv.conf</match>
       <description>PAM configuration modified!</description>
     </rule>
 
@@ -82,6 +83,7 @@
       <field name="file">^/bin | ^/usr/bin</field>
       <description>User-level binary file changed!</description>
     </rule>
+      <if_group>syscheck</if_group>
 
     <rule id="100016" level="8">
       <if_group>syscheck</if_group>
@@ -111,7 +113,7 @@
   <rule id="100903" level="6"> 
     <if_sid>24010</if_sid>
     <field name="osquery.name">suspicious_outbound</field>
-    <description>osquery: Process $(osquery.columns.process.name) has initiated outbound on remote port $(osquery.columns.remote_port)</description>
+    <description>osquery: Process $(osquery.columns.p.name) has initiated outbound to remote port $(osquery.columns.remote_port)</description>
   </rule>
       
   <rule id="100904" level="7"> 
@@ -141,14 +143,21 @@
 
 
 <!-- AUDITD rules -->
-    <rule id="100200" level="7">
+    <rule id="100200" level="5">
         <if_sid>80792</if_sid>
         <list field="audit.command" lookup="match_key">etc/lists/suspicious-programs</list>
         <description>Audit: Suspicious Command: $(audit.exe)</description>
         <group>audit_command,</group>
     </rule>
 
-    <rule id="100210" level="10">
+    <rule id="100210" level="7">
+        <if_sid>80792</if_sid>
+        <list field="audit.command" lookup="match_key" check_value="orange">etc/lists/suspicious-programs</list>
+        <description>Audit: Suspicious Command: $(audit.exe)</description>
+        <group>audit_command,</group>
+    </rule>
+
+    <rule id="100220" level="10">
         <if_sid>80792</if_sid>
         <list field="audit.command" lookup="match_key_value" check_value="red">etc/lists/suspicious-programs</list>
         <description>Audit: Highly Suspicious Command executed: $(audit.exe)</description>
