@@ -43,7 +43,7 @@ updateOS() {
 #FINISH ME PLS
 installPackages() {
     #packages to install, independent of package manager
-    packages="sudo nmap tmux tshark vim hostname htop clamav lynis"
+    packages="sudo nmap tmux tree vim hostname htop clamav lynis"
 
 
     printf "this function will be used to install important/essential packages on barebones systems"
