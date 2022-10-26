@@ -9,7 +9,11 @@ dmesg:yellow
 telnet:red
 gcc:orange
 passwd:orange
-sudo:orange
+sudo:yellow
 ifconfig:orange
 tshark:orange
 john:red
+usermod:red
+useradd:red
+nohup:yellow
+base64:orange
