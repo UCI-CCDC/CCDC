@@ -37,6 +37,10 @@ LINUX_IPS=$(cat $linux_ip_file)
 #centralization bad, but also good
 ######################################################
 
+# create ansible.cfg in home directory
+touch ~/.ansible.cfg
+echo "[ssh_connection]" >> ~/.ansible.cfg
+echo "ssh_args = -o StrictHostKeyChecking=accept-new" >> ~/.ansible.cfg
 
 
 # check if ansible is installed. If not, install it. 
@@ -46,10 +50,10 @@ if ! command -v ansible &> /dev/null; then
         echo "" >> /etc/apt/sources.list
         echo "deb http://ppa.launchpad.net/ansible/ansible/ubuntu bionic main"
         #gnupg is required for key add procedure
+        apt-get update -y 
         apt install gnupg -y
         apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 93C4A3FD7BB9C367
         #update package lists and install it
-        apt-get update -y 
         apt install ansible -y
 
     elif [ $(command -v yum) ]; then
