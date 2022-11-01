@@ -9,6 +9,13 @@
   register: wazuh_agent_ca_package_install
   until: wazuh_agent_ca_package_install is succeeded
 
+- name: Debian/Ubuntu | Install GNUPG
+  apt:
+    update_cache: yes
+    name:
+      - gnupg
+    state: present
+
 - name: Debian/Ubuntu | Install auditd
   apt:
     name:
@@ -20,7 +27,7 @@
 # not currently used
 - name: Debian/Ubuntu | set task facts
   set_fact:
-    DEB: 
+    DEB:
       - osquery_5.1.0-1.linux_amd64.deb
       - wazuh-agent_4.2.5-1_amd64.deb
     OSQUERY_DEB: "osquery_5.1.0-1.linux_amd64.deb"

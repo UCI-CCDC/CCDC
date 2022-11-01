@@ -36,25 +36,26 @@
 <!-- ======================================== -->
 <!-- FIM -->
 
-    <rule id="100009" level="2">
+    <rule id="100009" level="0">
       <if_group>syscheck</if_group>
       <field name="file">/root/.viminfo</field>
       <match>modified</match>
       <description>viminfo (vim history file) updated</description>
     </rule>
 
-    <rule id="100010" level="10">
+    <rule id="100010" level="0">
+      <if_group>syscheck</if_group>
+      <match>/etc/resolv.conf</match>
+      <description>resolv.conf modified, big whoop</description>
+    </rule>
+
+    <rule id="100011" level="10">
       <if_group>syscheck</if_group>
       <match>modified|added|deleted</match>
       <field name="file">^/etc/cron.</field>
       <description>File changed inside Cron!</description>
     </rule>
 
-    <rule id="100011" level="3">
-      <if_group>syscheck</if_group>
-      <match>/etc/resolv.conf</match>
-      <description>resolv.conf modified, big whoop</description>
-    </rule>
 
     <rule id="100012" level="10">
       <if_group>syscheck</if_group>
@@ -133,9 +134,9 @@
   </rule>
 
 <!-- REMOVING ANNOYING ALERTS -->
-    <rule id="101000" level="2"> 
+    <rule id="101000" level="0"> 
       <if_sid>24001</if_sid> 
-      <match>already\srunning</match>
+      <match>already running</match>
       <description>osquery already running</description> 
     </rule>
 

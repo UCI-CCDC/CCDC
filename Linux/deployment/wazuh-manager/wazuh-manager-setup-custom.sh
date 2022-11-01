@@ -40,7 +40,7 @@ fi
 echo "install packages that help in troubleshooting"
 apt-get install tree -y
 
-read -r -p "do you want to restart the wazuh-manager process?: " response
+read -r -p "\n\nDo you want to restart the wazuh-manager process?: " response
 case "$response" in
     [yY][eE][sS]|[yY]) 
         systemctl restart wazuh-manager
