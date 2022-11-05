@@ -1,15 +1,15 @@
 ---
-# This playbook is ONLY to be used when updating config files on agent machines. 
+# This playbook is ONLY to be used when updating config files on agent machines.
 # REMEMBER TO ADD ALL IP ADDRS TO /etc/ansible/hosts
 - hosts: all
   become: yes
   become_user: root
-  tasks: 
+  tasks:
   - name: Copy osquery.conf to agents
     copy:
       src: "ansible-wazuh-agent/files/osquery.conf"
       dest: /etc/osquery/osquery.conf
-    notify: 
+    notify:
       - restart wazuh-agent
       - restart osqueryd
 
@@ -18,7 +18,7 @@
       src: "ansible-wazuh-agent/files/audit.rules"
       dest: /etc/audit/rules.d/audit.rules
     notify: restart wazuh-agent
-    
+
 # runs all handlers at this point, means auditctl should work correctly
   - name: Flush Handlers
     meta: flush_handlers

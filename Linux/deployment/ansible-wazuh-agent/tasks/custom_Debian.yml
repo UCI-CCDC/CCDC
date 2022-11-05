@@ -28,4 +28,3 @@
   - name: Install the files in that path
     command: "dpkg -i /var/ansible/{{ item }}"
     loop: "{{ DEB }}"
-

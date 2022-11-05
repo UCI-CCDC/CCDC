@@ -42,6 +42,7 @@ touch ~/.ansible.cfg
 echo "[ssh_connection]" >> ~/.ansible.cfg
 echo "ssh_args = -o StrictHostKeyChecking=accept-new" >> ~/.ansible.cfg
 
+mkdir -p /etc/ansible/
 
 # check if ansible is installed. If not, install it. 
 if ! command -v ansible &> /dev/null; then
