@@ -2,6 +2,18 @@
 
 # basic setup of wazuh manager machine
 
+
+read -r -p "ARE THE CONFIG FILES EXACTLY HOW YOU WANT THEM?: " response
+case "$response" in
+    [yY][eE][sS]|[yY]) 
+        break
+        ;;
+    *)
+        echo "fix them and come back soon"
+        exit 0;;
+esac
+
+# start actual script
 echo "setting up wazuh manager configuration"
 
 echo "copying over custom rules"
