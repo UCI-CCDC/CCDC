@@ -27,7 +27,7 @@
   set_fact:
     RPM:
       - osquery-5.1.0-1.linux.x86_64.rpm
-      - wazuh-agent-4.2.5-1.x86_64.rpm
+      - wazuh-agent-4.3.9-1_RHEL_V6+.x86_64.rpm
     OSQUERY_RPM: "osquery-5.1.0-1.linux.x86_64.rpm"
 
 - name: check to see what packages are installed
