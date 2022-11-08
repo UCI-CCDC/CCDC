@@ -30,9 +30,9 @@
 - name: Debian/Ubuntu | set task facts
   set_fact:
     DEB:
-      - osquery_5.1.0-1.linux_amd64.deb
+      - osquery_5.5.1-1.linux_amd64.deb
       - wazuh-agent_4.3.9-1_debian_amd64.deb
-    OSQUERY_DEB: "osquery_5.1.0-1.linux_amd64.deb"
+    OSQUERY_DEB: "osquery_5.5.1-1.linux_amd64.deb"
 
 - name: Make Directory for files
   file:
