@@ -5,7 +5,7 @@
 #UCI CCDC linux script for inventory & common operations
 
 #Written by UCI CCDC linux subteam
-#UCI CCDC, 2021
+#UCI CCDC, 2022
 ########################################################
 
 
@@ -45,13 +45,11 @@ installPackages() {
     #packages to install, independent of package manager
     packages="sudo nmap tmux tree vim hostname htop clamav lynis"
 
-
     printf "this function will be used to install important/essential packages on barebones systems"
         if [ $(command -v apt-get) ]; then # Debian based
             apt-get install $packages -y -q
             #debian only packages
             apt-get install debsums
-
         elif [ $(command -v yum) ]; then
             yum -y install $packages 
         elif [ $(command -v pacman) ]; then 
@@ -60,7 +58,6 @@ installPackages() {
             apk update
             apk upgrade
             apk add bash vim man-pages mdocml-apropos bash-doc bash-completion util-linux pciutils usbutils coreutils binutils findutils attr dialog dialog-doc grep grep-doc util-linux-doc pciutils usbutils binutils findutils readline lsof lsof-doc less less-doc nano nano-doc curl-doc 
-
             apk add $packages
         fi
 }
