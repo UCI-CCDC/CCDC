@@ -6,12 +6,12 @@
   # Running with no arguments runs both procedures
   tasks:
   - name: Stop webmin service
-    ansible.builtin.service:  # Successfully stops on Debian
+    ansible.builtin.service:  # Tested successfully on Debian with systemctl
       name: webmin
       state: stopped
     tags: stop
   - name: Uninstall webmin
-    ansible.builtin.package:  # Will not uninstall for some reason
+    ansible.builtin.package: # may still appear in systemctl as masked 
       name: webmin 
       state: absent
     tags: rm
