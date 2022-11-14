@@ -1,5 +1,104 @@
 # Changes to rhel8CIS
 
+## 1.5.0
+
+- Changed include_tasks to import_tasks to resolve using tags for levels
+- #209 5.6.5 rewrite umask settings
+- #220 tidy up and align variables
+- #226 Thanks to Thulium-Drake
+  -Extended the auditd config required value for auditd space left percentage (not part of CIS Benchmark but required fopr auditd to run correctly in some cases)
+
+- #227 thanks to OscarElits
+  - chrony files now RH expected locations
+- #228 Thanks to benbulll 
+  - audit binary copy var missing
+
+
+## 1.4.0
+
+- workflow improvements
+- auditd alignment
+  - tftp client
+  - default locatoin moved from /var/tmp to /opt
+- linting
+  - new .ansiblelint
+  - boolean standards
+  - general linting improvements
+
+## 1.3.9
+
+- tidy up become statements
+
+Improvements for idempotency
+
+- update to auditd template
+  - uses facts and template new variable
+    - update_audit_template (default false)
+- 3.4.1.5 discovery improvement
+- 5.6.1.4 discovery improvement
+- warning count added to summary at end of playbook
+- Added support for Almalinux
+- Added support for Rocky
+
+## 1.3.8
+
+Issues
+
+- #185 thanks to @flwitten rsyslog and journald work
+- #189
+- #190 being addressed thanks to @ztmr - any feedback helpful on this one
+- #196 #200 thanks to @Thulium-Drake
+- #203 thanks to @scottdoane
+- #204 thanks to @ccravens
+- #206 flush handler tidy up
+
+## improvements
+
+- Dynamic UID discovery
+- Several title updates and alignments
+- Logic and idempotence improvement
+- Tag updates and fixes
+- Removed config no longer used
+- Dynamic container discovery
+- Update container variables and usage
+
+## 1.3.7
+
+Issues
+
+- thanks to @ccravens
+  - #160 & #183 - Please not this changes the variable for the aide cron job from /etc/crontab - manual tidy up maybe required.
+- thanks to @flwitten
+  - #180 - update to assert in main.yml and 1.4.1 conditional update
+  - #181 - 1.8.5 typo resolved
+  - #182 - 1.2.2 fixed variable and enhanced gpg check with vendor key
+
+Improvements
+
+- changed crypto to DEFAULT in defaults/main and updated as allowed option
+- 3.4.1.2 - removed enabled option as errors if masked and enable option
+- workflow added branch option to issues.
+
+## 1.3.6
+
+- Issues
+  - #164
+  - #165
+  - #168
+  - #176
+
+## 1.3.5
+
+- Update to V2.0.0
+  - many changes inline with new benchamrk requirements please refer to official docs
+
+## 1.3.4
+
+- CentOS no longer supported due to moving to Stream updates
+- Rocky and AlmaLinux tested and working
+- #155 thanks to RayMcAdmin
+- #156 thanks to Thulium-Drake
+
 ## 1.3.3
 
 - update to audit script
