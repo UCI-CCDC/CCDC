@@ -1,0 +1,11 @@
+[HKEY_CURRENT_USER\Software\Microsoft\Windows NT\CurrentVersion\Font Management]
+
+“Auto Activation Mode”=dword:00000001
+
+“InstallAsLink”=dword:00000000
+
+“Inactive Fonts”=-
+
+“Active Languages”=-
+
+[-HKEY_CURRENT_USER\Software\Microsoft\Windows NT\CurrentVersion\Font Management\Auto Activation Languages]
