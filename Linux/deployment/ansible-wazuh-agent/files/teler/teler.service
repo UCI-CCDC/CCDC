@@ -1,0 +1,14 @@
+[Unit]
+Description=teler systemd service
+After=apache2.service
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=root
+ExecStart=/usr/bin/tail -f /var/log/apache2/access.log | /usr/bin/teler -c /var/ossec/etc/teler.yaml
+
+[Install]
+WantedBy=multi-user.target
