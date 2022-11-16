@@ -2,6 +2,18 @@
 
 # basic setup of wazuh manager machine
 
+
+read -r -p "ARE THE CONFIG FILES EXACTLY HOW YOU WANT THEM?: " response
+case "$response" in
+    [yY][eE][sS]|[yY]) 
+        break
+        ;;
+    *)
+        echo "fix them and come back soon"
+        exit 0;;
+esac
+
+# start actual script
 echo "setting up wazuh manager configuration"
 
 echo "copying over custom rules"
@@ -40,7 +52,8 @@ fi
 echo "install packages that help in troubleshooting"
 apt-get install tree -y
 
-read -r -p "\n\nDo you want to restart the wazuh-manager process?: " response
+echo "\n\n"
+read -r -p "Do you want to restart the wazuh-manager process?: " response
 case "$response" in
     [yY][eE][sS]|[yY]) 
         systemctl restart wazuh-manager
