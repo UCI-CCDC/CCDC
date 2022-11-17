@@ -6,11 +6,12 @@
   become: yes
   become_user: root
   tasks: 
-  - authorized_key: Upload SSH key to hosts
-    user: root
-    state: present
-    manage_dir: yes
-    key: "{{ lookup('file', '/root/.ssh/id_rsa.pub') }}"
+  - name: Upload SSH key to hosts
+    authorized_key:
+      user: root
+      state: present
+      manage_dir: yes
+      key: "{{ lookup('file', '/root/.ssh/id_rsa.pub') }}"
 
 #  - name: manual transfer (can replace anything already in there, be careful)
 #    copy:

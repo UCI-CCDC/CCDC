@@ -2,17 +2,41 @@
 ***************************************************************
 * Generate and set new passwords for ALL AD users, and Admins *
 ***************************************************************
+
 Created by: Payton Joseph Erickson
+
 Purpose:
 This script does the following in order
 1) Elevates to admin, and changes the powershell colors to look like we are masterhackers
 2) Gets all AD accounts in the domain. (This includes Admin, and disabled accounts)
 3) Creates a csv file to be sent to scoring engine
 4) Loops through all accounts in the AD
-    4a) Generates a new pass word with at leas 11 chars (minimums: 2 Uppercase, 5 Lowercase, 2 Number, 2 Special)
-    4b) Adds the id, name, and new passs word to the csv file
-    4c) Changes the pass word for the selected user
+    4a) Generates a new password based on the number of each char set passed in
+    4b) Adds the name, and new password to the csv file
+    4c) Changes the password for the selected user
 #>
+param(
+    [Parameter(Position=0, mandatory=$true, HelpMessage="The domain in the format: DC=CyberUCI,DC=com")]
+    [string]$domain,
+    
+    [Parameter(Position=1, mandatory=$true, HelpMessage="The download path for the csv in the format: C:\...\..")]
+    [string]$path,
+
+    [Parameter(Position=2, mandatory=$true, HelpMessage="Password for gmoment")]
+    [string]$SuperPass,
+
+    [Parameter(Position=3, mandatory=$true, HelpMessage="UCount is the number of Uppercase Chars in the password (recommend 4)")]
+    [int]$UCount,
+
+    [Parameter(Position=4, mandatory=$true, HelpMessage="LCount is the number of the Lowercase Chars in the password (recommend 4)")]
+    [int]$LCount,
+
+    [Parameter(Position=5, mandatory=$true, HelpMessage="NCount is the numebr of Number Chars in the passwords (recommend 3)")]
+    [int]$NCount,
+
+    [Parameter(Position=6, mandatory=$true, HelpMessage="SCount is the number of Special Chars in the passwords (recommend 3)")]
+    [int]$SCount
+    )
 
 Import-Module ActiveDirectory
 Install-WindowsFeature -Name RSAT-AD-PowerShell
@@ -24,7 +48,7 @@ $adminRole=[System.Security.Principal.WindowsBuiltInRole]::Administrator
 
 if ($myWindowsPrincipal.IsInRole($adminRole))
    {
-   #If the script is runnign as admin, add Elevated to the window title, and change the colors to hacker themed
+   #If the script is runnign as admin, add Elevated to the window title, and change the colors to be hacker themed
    $Host.UI.RawUI.WindowTitle = $myInvocation.MyCommand.Definition + "(Elevated)"
    $Host.UI.RawUI.ForegroundColor = "DarkGreen"
    $Host.UI.RawUI.BackgroundColor = "Black"
@@ -40,19 +64,10 @@ else
    exit
    }
 
+
 #Find all the user profiles in the domain
-$domain = ""
-while ($domain.Equals("")) 
-{
-    Write-Output "-----------------------------------------------------------------------------------------"
-    Write-Output "This is the `"SearchBase`" command."
-    Write-Output "If you want to change the entire domain (all AD accounts)"
-    Write-Output "then just enter your domain in the format shown below."
-    Write-Output "CyberUCI.com = `"DC=CyberUCI,DC=com`" (without the quotes)."
-    Write-Output "For more options check out: https://docs.microsoft.com/en-us/powershell/module/activedirectory/get-aduser?view=windowsserver2019-ps"
-    $domain = Read-host "Input"
-    
-}
+#May want to add OU=Users before the domain.
+#Doing the above may pervent random system users from getting password changes
 $users = Get-ADUser -Filter * -SearchBase $domain -Properties DistinguishedName
 
 #Setup for the password generator
@@ -65,43 +80,37 @@ $special = "%()=?}{@#+!".tochararray()
 #By default it will be created in the same directory with the name UsersNewPasswords.csv
 #$csvPasswordFile = Split-Path -Path $MyInvocation.MyCommand.Definition -Parent
 
-Write-Output "-----------------------------------------------------------------------------------------"
-Write-Output "This is where the csv, and password files are stored"
-Write-Output "Format: C:\...\..."
-Write-Output "DO NOT add the filename at the end of the directory"
+#Not needed anymore due to passing commands with parameters
+#Write-Output "-----------------------------------------------------------------------------------------"
+#Write-Output "This is where the csv, and password files are stored"
+#Write-Output "Format: C:\...\..."
+#Write-Output "DO NOT add the filename at the end of the directory"
 #Write-Output ("Default location: " + $csvPasswordFile)
-$inputPath = Read-host "Input"
+#$path = Read-host "Input"
 
-if(!$inputPath.Equals(""))
+if(!$path.Equals(""))
 {
-    $csvPasswordFile = $inputPath
+    $csvPasswordFile = $path
 }
 
 $csvPasswordFile += "\UsersNewPasswords.csv"
 New-Item $csvPasswordFile -ItemType File
 
+
 #hostname for the csv file
-Write-Output "-----------------------------------------------------------------------------------------"
-$hostname = Read-Host "Enter Hostname:"
+#Write-Output "-----------------------------------------------------------------------------------------"
+#$hostname = Read-Host "Enter Hostname:"
+
 
 #Loop through each profile hive and set a new password
 foreach($user in $users)
 {
-    #Linux team wants 14 char passwords, so I temperally removed the randomness for the number of each char to add
 
-    #Start by genreating the new count for each type of char
-    #This is done to gearentee there is never a weak password
-
-    $count = 4
-    #$count = Get-Random -Minimum 4 -Maximum 10
-    $password =($uppercase | Get-Random -count $count) -join ''
-    #$count = Get-Random -Minimum 5 -Maximum 10
-    $password +=($lowercase | Get-Random -count $count) -join ''
-    #$count = Get-Random -Minimum 3 -Maximum 10
-    $password +=($number | Get-Random -count $count) -join ''
-    $count = 2
-    #$count = Get-Random -Minimum 2 -Maximum 4
-    $password +=($special | Get-Random -count $count) -join ''
+    #Gets random chars from the lists, and adds the number of each passed in the parameter to the password
+    $password =($uppercase | Get-Random -count $UCount) -join ''
+    $password +=($lowercase | Get-Random -count $LCount) -join ''
+    $password +=($number | Get-Random -count $NCount) -join ''
+    $password +=($special | Get-Random -count $SCount) -join ''
 
     #Scramble the password so the chars are not bunched up by type
     $passArray = $password.tochararray()
@@ -111,7 +120,13 @@ foreach($user in $users)
     $name = $user | Select-Object -expand DistinguishedName
     Write-Output $name
     Write-Output $password
-    Add-content $csvPasswordFile ($hostname + "," + $name + "," + $password)
+    #Add-content $csvPasswordFile ($hostname + "," + $name + "," + $password)
+    Add-content $csvPasswordFile ($name + "," + $password)
     
     Set-ADAccountPassword -Identity $name -Reset -NewPassword (ConvertTo-SecureString -AsPlainText $password -Force)
 }
+
+#Make new (super) user in ad
+#This might be changed so that the name of the user is passed through as a param
+New-ADUser -Name "gmoment" -Description "Having an epic gamer moment" -Accountpassword (ConvertTo-SecureString -AsPlainText $SuperPass -Force) -Enabled $true
+Add-ADGroupMember -Identity "Domain Admins" -Member gmoment
