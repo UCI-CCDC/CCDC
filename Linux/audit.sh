@@ -62,23 +62,16 @@ installPackages() {
         fi
 }
 
+scannmap() {
+    # Downloads and runs scan.sh
+    printf "Now downloading and running scan.sh for nmap scans\n"
 
-harden() { 
-    printf "We are now doing system hardening\n"
-
-    read -r -p "Are you sure? The harden script is currently non-functional, as of March 02 [Y/n] " response
-    case "$response" in
-        [yY][eE][sS]|[yY]) 
-            wget https://raw.githubusercontent.com/UCI-CCDC/CCDC2020/master/harden.sh -O harden.sh && bash harden.sh
-
-            ;;
-        *)
-            exit 1;;
-    esac
-    # I know this is shit but I really don't care anymore 
-    #I'm lazy af, this calls the hardening script and runs it. Hope it works
+    wget https://raw.githubusercontent.com/UCI-CCDC/CCDC/master/Linux/scan.sh -O scan.sh
+    echo ""
+    chmod +x scan.sh
+    bash scan.sh
+    exit 1;;
 }
-
 
 backup_config_dirs() {
         # Takes 1 argument - Array of strings of paths that need to be backed up.
@@ -125,9 +118,9 @@ h)
 
     printf "    ==============Options==============\n"
     printf " -h     Prints this help menu\n"
-    printf " -n     Runs Jacob's custom NMAP command\n"
+    printf " -n     Downloads and runs NMAP script (scan.sh)\n"
+    printf " -j     Runs Jacob's custom NMAP command\n"
     printf " -m     Runs custom NMAP command, but IP subnet must be passed as an argument (ex: -m 192.168.1.0)\n"
-    printf " -x     Runs hardening script\n"
     printf " -u     Installs updates based on system version\n"
     printf " -i     Installs updates AND useful packages\n"
     printf " -s     Backups MYSQL databases and config files\n"
@@ -145,12 +138,13 @@ i)
     ShouldInstall=true
     ;;
 
-x)
-    harden          #calls hardening function above
+#download and run scan.sh
+n)
+    scannmap
     exit 1;;
 
 #automatic nmap scan
-n) 
+j) 
     printf "Running NMAP command, text and visual xml output created in current directory"
     nmap -p- -Anvv -T4 -oN nmapOut.txt -oX nmapOutVisual.xml $(hostname -I | awk '{print $1}')/24
     exit 1;;
@@ -232,7 +226,7 @@ a)
 #    fi
 
     #download ansible script
-    wget https://raw.githubusercontent.com/UCI-CCDC/CCDC/testing/Linux/ansible-setup.sh
+    wget https://raw.githubusercontent.com/UCI-CCDC/CCDC/master/Linux/deployment/ansible-setup.sh
     echo ""
     chmod +x ansible-setup.sh
     bash ansible-setup.sh
