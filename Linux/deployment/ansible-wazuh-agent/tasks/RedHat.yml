@@ -54,6 +54,13 @@
   args:
     warn: no
 
+- name: RedHat | copy and install teler
+  until: teler_cpy is succeeded
+  copy:
+    src: "files/teler/teler"
+    dest: /usr/bin/
+  register: teler_cpy
+
 - name: RedHat/CentOS/Fedora | Install Wazuh repo
   yum_repository:
     name: wazuh_repo

@@ -52,6 +52,12 @@
   command: "dpkg -i /var/ansible/{{ OSQUERY_DEB }}"
   register: osquery_install
 
+- name: Debian | copy and install teler
+  until: teler_cpy is succeeded
+  copy:
+    src: "files/teler/teler"
+    dest: /usr/bin/
+  register: teler_cpy
 
 - name: Debian/Ubuntu | Installing Wazuh repository key (Ubuntu 14)
   become: true
