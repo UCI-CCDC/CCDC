@@ -1,0 +1,23 @@
+<!--
+ - YARA decoders
+ - Created by Wazuh, Inc.
+ - Copyright (C) 2015-2022, Wazuh Inc.
+ - This program is a free software; you can redistribute it and/or modify it under the terms of GPLv2.
+-->
+
+<decoder name="yara">
+  <prematch>wazuh-yara: </prematch>
+</decoder>
+
+<decoder name="yara">
+  <parent>yara</parent>
+  <regex>wazuh-yara: (\S+) - Scan result: (\S+) (\S+)</regex>
+  <order>log_type, yara_rule, yara_scanned_file</order>
+</decoder>
+
+<decoder name="yara">
+  <parent>yara</parent>
+  <regex>wazuh-yara: (\S+) - Yara active response error. (\.+)</regex>
+  <order>log_type, error_message</order>
+</decoder>
+
