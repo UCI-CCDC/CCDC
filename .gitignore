@@ -1,0 +1,3 @@
+#gitignore
+Linux/deployment/old_ansible-wazuh-agent/
+

@@ -26,9 +26,9 @@
 - name: RedHat/CentOS/Fedora | set task facts
   set_fact:
     RPM:
-      - osquery-5.1.0-1.linux.x86_64.rpm
-      - wazuh-agent-4.2.5-1.x86_64.rpm
-    OSQUERY_RPM: "osquery-5.1.0-1.linux.x86_64.rpm"
+      - osquery-5.5.1-1.linux.x86_64.rpm
+      - wazuh-agent-4.3.9-1_RHEL_V6+.x86_64.rpm
+    OSQUERY_RPM: "osquery-5.5.1-1.linux.x86_64.rpm"
 
 - name: check to see what packages are installed
   package_facts:
@@ -53,6 +53,13 @@
   shell: "rpm -i /var/ansible/{{ OSQUERY_RPM }}"
   args:
     warn: no
+
+- name: RedHat | copy and install teler
+  until: teler_cpy is succeeded
+  copy:
+    src: "files/teler/teler"
+    dest: /usr/bin/
+  register: teler_cpy
 
 - name: RedHat/CentOS/Fedora | Install Wazuh repo
   yum_repository:

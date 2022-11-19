@@ -108,7 +108,7 @@ ShouldInstall=false
 timesRun=$(echo $(head -n 1 "./audit.log") + 1 | bc -l)
 echo $timesRun > auditlog.log
 
-# this fucker is the flag statement
+# this is the flag statement
 while getopts :huixnsar:m: option
 do
 case "${option}" in

@@ -4,33 +4,54 @@
 - name: "PRELIM | List users accounts"
   command: "awk -F: '{print $1}' /etc/passwd"
   args:
-      warn: no
-  changed_when: no
-  check_mode: no
+      warn: false
+  changed_when: false
+  check_mode: false
   register: users
+
+- name: "PRELIM | Gather interactive user ID min and max"
+  block:
+      - name: "PRELIM | Gather interactive user ID min"
+        shell: grep ^UID_MIN /etc/login.defs | awk '{print $2}'
+        changed_when: false
+        failed_when: false
+        register: rhel8cis_min_uid
+
+      - name: "PRELIM | Gather interactive user ID max"
+        shell: grep ^UID_MAX /etc/login.defs | awk '{print $2}'
+        changed_when: false
+        failed_when: false
+        register: rhel8cis_max_uid
+
+      - name: "PRELIM | Setting the fact"
+        set_fact:
+            rhel8uid_interactive_uid_start: "{{ rhel8cis_min_uid.stdout | string }}"
+            rhel8uid_interactive_uid_stop: "{{ rhel8cis_max_uid.stdout | string }}"
+  when:
+      - rhel8uid_info_dynamic
 
 - name: "PRELIM | Gather accounts with empty password fields"
   shell: "cat /etc/shadow | awk -F: '($2 == \"\" ) {j++;print $1; } END {exit j}'"
   args:
-      warn: no
-  changed_when: no
-  check_mode: no
+      warn: false
+  changed_when: false
+  check_mode: false
   register: empty_password_accounts
 
 - name: "PRELIM | Gather UID 0 accounts other than root"
   shell: "cat /etc/passwd | awk -F: '($3 == 0 && $1 != \"root\") {i++;print $1 } END {exit i}'"
   args:
-      warn: no
-  changed_when: no
-  check_mode: no
-  register: uid_zero_accounts_except_root
+      warn: false
+  changed_when: false
+  check_mode: false
+  register: rhel8cis_uid_zero_accounts_except_root
 
 - name: "PRELIM | Gather system-wide crypto-policy"
   shell: update-crypto-policies --show
   args:
-      warn: no
-  changed_when: no
-  check_mode: no
+      warn: false
+  changed_when: false
+  check_mode: false
   register: system_wide_crypto_policy
 
 - name: "PRELIM | if systemd coredump"
@@ -44,6 +65,17 @@
   set_fact:
       mount_names: "{{ ansible_mounts | map(attribute='mount') | list }}"
 
+- name: "PRELIM | Install dconf"
+  package:
+      name: dconf
+      state: present
+  when:
+      - "'gdm' in ansible_facts.packages"
+      - "'dconf' not in ansible_facts.packages"
+      - rhel8cis_rule_1_8_2 or
+        rhel8cis_rule_1_8_3 or
+        rhel8cis_rule_1_8_5
+
 - name: "PRELIM | Section 4.1 | Configure System Accounting (auditd)"
   package:
       name: audit
@@ -54,6 +86,16 @@
   package:
       name: cronie
       state: present
+
+- name: "PRELIM | Find all sudoers files."
+  command: "find /etc/sudoers /etc/sudoers.d/ -type f ! -name '*~' ! -name '*.*'"
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  register: rhel8cis_sudoers_files
+  when:
+      - rhel8cis_rule_5_3_4 or
+        rhel8cis_rule_5_3_5
 
 - name: "PRELIM | Install authconfig"
   package:
@@ -83,12 +125,6 @@
             grub2_path: /etc/grub2-efi.cfg
         when: rhel_08_efi_boot.stat.exists
 
-# - name: debug legacy boot var
-#   debug:
-#       msg: |
-#           legacy_boot={{ rhel8cis_legacy_boot }}
-#           grub2_path={{ grub2_path }}
-
 - name: "PRELIM | AUDIT | Ensure permissions on bootloader config are configured | Get grub config file stats"
   stat:
       path: "{{ grub2_path }}"
@@ -108,3 +144,22 @@
       - rhel8cis_rule_1_2_2
   tags:
       - skip_ansible_lint
+
+# Optional extra keys to extend auditd not part of CIS but can influence a system
+# e.g. admin_space_left: '10%'
+
+- name: PRELIM | Configure other keys for auditd.conf
+  lineinfile:
+      path: /etc/audit/auditd.conf
+      regexp: "^{{ item }}( |=)"
+      line: "{{ item }} = {{ rhel8cis_auditd_extra_conf[item] }}"
+  notify: restart auditd
+  loop: "{{ rhel8cis_auditd_extra_conf.keys() }}"
+  when:
+      - rhel8cis_auditd_extra_conf.keys() | length > 0
+      - rhel8cis_level_2
+  tags:
+      - level2-server
+      - level2-workstation
+      - patch
+      - auditd

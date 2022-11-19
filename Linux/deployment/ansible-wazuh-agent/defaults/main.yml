@@ -1,6 +1,5 @@
 ---
-wazuh_agent_version: 4.2.5-1
-
+wazuh_agent_version: 4.3.9
 
 # Custom packages installation
 
@@ -12,7 +11,7 @@ wazuh_custom_packages_installation_agent_rpm_url: ""
 
 wazuh_agent_sources_installation:
   enabled: false
-  branch: "v4.2.5"
+  branch: "v4.3.9"
   user_language: "y"
   user_no_stop: "y"
   user_install_type: "agent"
@@ -55,8 +54,6 @@ wazuh_winagent_config:
   auth_path_x86: C:\'Program Files (x86)'\ossec-agent\agent-auth.exe
   check_md5: True
   md5: 8ffa75d13280f1aa6ffca54f4273df4d
-wazuh_winagent_config_url: https://packages.wazuh.com/4.x/windows/wazuh-agent-4.2.5-1.msi
-wazuh_winagent_package_name: wazuh-agent-4.2.5-1.msi
 
 wazuh_dir: "/var/ossec"
 
@@ -105,7 +102,7 @@ wazuh_agent_enrollment:
   agent_name: ''
   groups: ''
   agent_address: ''
-  ssl_cipher: HIGH:!ADH:!EXP:!MD5:!RC4:!3DES:!CAMELLIA:@STRENGTH
+  ssl_ciphers: HIGH:!ADH:!EXP:!MD5:!RC4:!3DES:!CAMELLIA:@STRENGTH
   server_ca_path: ''
   agent_certificate_path: ''
   agent_key_path: ''
@@ -368,7 +365,7 @@ wazuh_agent_log_format: 'plain'
 
 # wazuh_agent_config
 wazuh_agent_config_defaults:
-  repo: '{{ wazuh_agent_repo }}'
+  repo: '{{ wazuh_repo }}'
   active_response: '{{ wazuh_agent_active_response }}'
   log_format: '{{ wazuh_agent_log_format }}'
   client_buffer: '{{ wazuh_agent_client_buffer }}'
