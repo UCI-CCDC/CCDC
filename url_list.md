@@ -14,7 +14,7 @@ ppa.launchpad.net/ansible/ansible/ubuntu
 wazuh.com
 ansible.com
 pkg.osquery.io
-
+https://www.first.org/cvss/calculator/3.1
 
 
 ```
