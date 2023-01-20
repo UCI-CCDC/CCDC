@@ -70,7 +70,7 @@ scannmap() {
     echo ""
     chmod +x scan.sh
     bash scan.sh
-    exit 1;;
+    exit 1;
 }
 
 backup_config_dirs() {
