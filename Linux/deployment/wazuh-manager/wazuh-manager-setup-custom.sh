@@ -23,7 +23,7 @@ echo "adding agent.conf to configuration"
 cp files/agent.conf /var/ossec/etc/shared/default/agent.conf
 
 echo "adding correct permissions to agent.conf"
-chown ossec:ossec /var/ossec/etc/shared/default/agent.conf
+chown wazuh:wazuh /var/ossec/etc/shared/default/agent.conf
 chmod 640 /var/ossec/etc/shared/default/agent.conf
 
 echo "copying suspicious-programs list to location"

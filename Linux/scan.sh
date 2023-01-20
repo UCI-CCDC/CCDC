@@ -16,13 +16,13 @@ mkdir nmap && cd nmap
 mkdir xml
 
 echo "[*] Starting Nmap scan for live hosts..."
-nmap -v0 -sn --open -oN hosts --min-rate 5000 $1
+nmap -v0 -sn -n --open -oN hosts -T5 $1
 
 echo "[*] Cleaning up live hosts..."
 grep "for" hosts | cut -d " " -f 5 >> live_hosts.txt
 
 echo "[*] Starting Nmap fast default scan on live hosts..."
-nmap -v -F --open -oN scan_default -oX xml/scan_default.xml --min-rate 5000 --osscan-limit --max-os-tries 1 -iL live_hosts.txt
+nmap -v0 -F -n --open -oN scan_default -oX xml/scan_default.xml -T5 --osscan-limit --max-os-tries 1 -iL live_hosts.txt
 
 read -p "[?] Start Aggressive scan? [y/N] " agg_scan
 if [[ -z $agg_scan ]]; then 
@@ -31,7 +31,7 @@ fi
 
 if [[ $agg_scan == "y" ]]; then
     echo "[*] Starting Nmap aggressive scan on live hosts..."  
-    nmap -v -A -oN scan_aggressive -oX xml/scan_aggressive.xml --min-rate 5000 -iL live_hosts.txt
+    nmap -v -A -n -oN scan_aggressive -oX xml/scan_aggressive.xml -T5 -iL live_hosts.txt
 fi
 
 check_deps() {

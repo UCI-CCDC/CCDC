@@ -19,9 +19,9 @@
       dest: /etc/audit/rules.d/audit.rules
     notify: restart wazuh-agent
 
-  - name: Copy teler.conf to agents
+  - name: Copy teler.yaml to agents
     copy:
-      src: "ansible-wazuh-agent/files/teler/teler.conf"
+      src: "ansible-wazuh-agent/files/teler/teler.yaml"
       dest: /var/ossec/etc/
 
   - name: Copy teler.service to agents
