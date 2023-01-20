@@ -70,7 +70,6 @@ scannmap() {
     echo ""
     chmod +x scan.sh
     bash scan.sh
-    exit 1;
 }
 
 backup_config_dirs() {
@@ -105,7 +104,7 @@ ShouldInstall=false
 # To see if this is the first time running the script.
 # Useful for backing up config directories.
 [[ ! -e ./auditlog.log ]] && touch auditlog.log && echo 0 > auditlog.log # This is only 0 temporarily if the log didn't exist yet.
-timesRun=$(echo $(head -n 1 "./audit.log") + 1 | bc -l)
+timesRun=$(echo $(head -n 1 "./auditlog.log") + 1 | bc -l) #this line has errors
 echo $timesRun > auditlog.log
 
 # this is the flag statement
@@ -143,7 +142,7 @@ n)
     scannmap
     exit 1;;
 
-#automatic nmap scan
+#automatic nmap scan - goes to invalid syntax instead of here
 j) 
     printf "Running NMAP command, text and visual xml output created in current directory"
     nmap -p- -Anvv -T4 -oN nmapOut.txt -oX nmapOutVisual.xml $(hostname -I | awk '{print $1}')/24
@@ -191,7 +190,7 @@ r)
 
     exit 1;;
 
-#debsums flag
+#debsums flag - goes to invalid syntax instead of here
 d)
     printf "Checking file validity using debsums"
 
