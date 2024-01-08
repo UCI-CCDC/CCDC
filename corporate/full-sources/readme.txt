@@ -1,0 +1,21 @@
+- CIS_Controls__v8__Critical_Security_Controls__2023_08:
+https://learn.cisecurity.org/CIS-Controls-v8-guide-pdf
+
+- NIST-computer-security-incident-handling-guide:
+https://nvlpubs.nist.gov/nistpubs/specialpublications/nist.sp.800-61r2.pdf
+
+- NIST-cybersecurity-framework-quick-start-guide:
+https://www.nist.gov/cyberframework/getting-started/quick-start-guide 
+
+- CIS_Microsoft_Windows_10_Stand-alone_Benchmark_v2.0.0-4:
+  Microsoft Windows Desktop, CIS Microsoft Windows 10 Stand-alone Benchmark v2.0.0-4
+- CIS_Ubuntu_Linux_22.04_LTS_Benchmark_v1.0.0-1:
+  Ubuntu Linux, CIS Ubuntu Linux 22.04 LTS Benchmark v1.0.0
+(Two pdfs above not directly accessible, but still open-source through the link below)
+https://downloads.cisecurity.org/#/
+
+- NIST-guide-to-protecting-the-confidentiality-of-pii:
+https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-122.pdf
+
+- microsoft-password-policy-recommendations-m365:
+https://learn.microsoft.com/en-us/microsoft-365/admin/misc/password-policy-recommendations?view=o365-worldwide
