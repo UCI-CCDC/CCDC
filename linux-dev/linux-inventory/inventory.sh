@@ -165,7 +165,7 @@ ps aux | awk 'NR==1; /docker|samba|postfix|dovecot|smtp|psql|ssh|clamav|mysql|bi
 sep
 empty_line
 
-if command -v kubectl &> /dev/null; then
+if command -v kubectl; then
     echo "KUBERNETES:"
     dash_sep
     k=$(kubectl get nodes $HOSTNAME 2>/dev/null | grep "control-plane")
