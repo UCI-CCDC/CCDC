@@ -45,6 +45,7 @@ Write-Output "Operating System:" | Out-File -FilePath log.txt -Append
 ((Get-WmiObject Win32_OperatingSystem).Caption) | Out-File -FilePath log.txt -Append
 Write-Output "" | Out-File -FilePath log.txt -Append
 
+#Getting open ports
 Write-Output "Open Ports:" | Out-File -FilePath log.txt -Append
 $ports = (get-nettcpconnection | where {($_.State -eq "Listen")} | select LocalPort,@{Name="Process";Expression={(Get-Process -Id $_.OwningProcess).ProcessName}} | Sort-Object LocalPort -Unique | ?{$_.LocalPort -lt 49152})
 for ($i = 0; $i -lt $ports.Count; $i++) {
