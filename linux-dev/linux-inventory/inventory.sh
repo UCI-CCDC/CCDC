@@ -52,6 +52,14 @@ echo -e $OS
 sep
 empty_line
 
+if command -v transactional-update; then
+    echo "Transactional Server"
+    dash_sep
+    transactional-update status
+    sep
+    empty_line
+fi
+
 echo "Open ports and PIDs:"
 dash_sep
 if command_exists ss; then
