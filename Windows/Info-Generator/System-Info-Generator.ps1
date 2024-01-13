@@ -1,3 +1,36 @@
+$defaultLabel = "?"
+$portLabels = @{
+    "21" = "FTP";
+    "22" = "SSH";
+    "25" = "SMTP";
+    "53" = "DNS";
+    "80" = "HTTP";
+    "88" = "Kerberos";
+    "110" = "POP3";
+    "135" = "MSRPC"
+    "139" = "NetBIOS"
+    "143" = "IMAP"
+    "389" = "LDAP"
+    "443" = "HTTPS";
+    "445" = "SMB";
+    "464" = "Kerberos Password Change"
+    "465" = "SMTP"
+    "587" = "SMTP"
+    "593" = "MSRPC"
+    "636" = "LDAPS"
+    "993" = "IMAP"
+    "995" = "POP3"
+    "2525" = "SMTP"
+    "3268" = "LDAP"
+    "3269" = "LDAPS"
+    "3389" = "RDP"
+    "5985" = "WINRM"
+    "5986" = "WINRM (Secure)"
+    "8080" = "HTTP"
+    "9389" = "ADWS"
+    "47001" = "WINRM"
+}
+
 Write-Output "`nIP Address:" | Out-File -FilePath log.txt -Append
 ((Get-NetIPAddress -AddressFamily IPV4 -InterfaceAlias Ethernet*).IPAddress) | Out-File -FilePath log.txt -Append
 Write-Output "" | Out-File -FilePath log.txt -Append
@@ -13,7 +46,17 @@ Write-Output "Operating System:" | Out-File -FilePath log.txt -Append
 Write-Output "" | Out-File -FilePath log.txt -Append
 
 Write-Output "Open Ports:" | Out-File -FilePath log.txt -Append
-(get-nettcpconnection | where {($_.State -eq "Listen")} | select LocalPort,@{Name="Process";Expression={(Get-Process -Id $_.OwningProcess).ProcessName}} | Sort-Object LocalPort | ft) | Out-File -FilePath log.txt -Append
+$ports = (get-nettcpconnection | where {($_.State -eq "Listen")} | select LocalPort,@{Name="Process";Expression={(Get-Process -Id $_.OwningProcess).ProcessName}} | Sort-Object LocalPort -Unique | ?{$_.LocalPort -lt 49152})
+for ($i = 0; $i -lt $ports.Count; $i++) {
+    $portNumber = ($ports[$i].LocalPort).ToString()
+    if ($portLabels.ContainsKey($portNumber)) {
+        $ports[$i] | Add-Member -MemberType NoteProperty -Name "Label" -Value $portLabels[$portNumber]
+    }
+    else {
+        $ports[$i] | Add-Member -MemberType NoteProperty -Name "Label" -Value $defaultLabel
+    }
+}
+$ports | select LocalPort,Label,Process | Out-File -FilePath log.txt -Append
 Write-Output "" | Out-File -FilePath log.txt -Append
 
 #Get running services
@@ -25,9 +68,11 @@ Write-Output "" | Out-File -FilePath log.txt -Append
 
 #Get running processes
 # TODO: Find a different way of getting processes
+<#
 Write-Output "Running Processes:" | Out-File -FilePath log.txt -Append
 (Get-Process | Where-Object { $_.MainWindowTitle } | Format-Table ID,Name,Mainwindowtitle -AutoSize -Wrap) | Out-File -FilePath log.txt -Append
 Write-Output "" | Out-File -FilePath log.txt -Append
+#>
 
 #Get DNS records if DC
 $DC = Get-WmiObject -Query "select * from Win32_OperatingSystem where ProductType='2'"
