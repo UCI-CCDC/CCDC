@@ -19,3 +19,15 @@ https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-122.pdf
 
 - microsoft-password-policy-recommendations-m365:
 https://learn.microsoft.com/en-us/microsoft-365/admin/misc/password-policy-recommendations?view=o365-worldwide
+
+- NIST-security-privacy-controls-for-info-systems:
+https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r5.pdf
+
+- NIST-app-container-security-guide:
+https://nvlpubs.nist.gov/nistpubs/specialpublications/nist.sp.800-190.pdf
+
+- SANS-remote-access-policy-template:
+https://assets.contentstack.io/v3/assets/blt36c2e63521272fdc/bltc96a4c2cb0dcef43/636db4142e16be076e6e003f/Remote_Access_Policy.pdf
+
+- UDallas-SSO-policy:
+https://udallas.edu/offices/technology/_documents/Single%20Sign%20On%20Policy.pdf
