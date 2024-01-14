@@ -18,7 +18,7 @@ if [ "$(id -u)" -ne 0 ]; then
 fi
 
 if ! command_exists awk; then
-    echo "Command awk not found. Normalize the machine!"
+    echo "Command awk not found. Install and try again."
     exit 1
 fi
 sep
