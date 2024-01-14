@@ -16,7 +16,7 @@ PSQL_USER="$1"
 export PGPASSWORD="$2"
 PSQL_HOST="$3"
 DATA_PATH="$4"
-echo "MySQL Auditing"
+echo "PSQL Auditing"
 
 cd $DATA_PATH
 
@@ -35,5 +35,5 @@ while read selected_db; do
     FROM information_schema.role_table_grants WHERE table_catalog='${selected_db}' AND table_schema = 'public';" > $selected_db.txt
 done <database_list.txt
 
-echo "MYSQL Auditing finished"
+echo "PSQL Auditing finished"
 
