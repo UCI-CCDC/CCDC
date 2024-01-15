@@ -75,6 +75,9 @@ Write-Output "Running Processes:" | Out-File -FilePath log.txt -Append
 Write-Output "" | Out-File -FilePath log.txt -Append
 #>
 
+#Get SMB shares
+Get-SmbShare | Out-File -FilePath log.txt -Append
+
 #Get DNS records if DC
 $DC = Get-WmiObject -Query "select * from Win32_OperatingSystem where ProductType='2'"
 if ($DC) {
