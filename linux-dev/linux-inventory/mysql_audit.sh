@@ -23,6 +23,8 @@ dash_sep () {
 MYSQL_USER="$1"
 MYSQL_PASSWORD="$2"
 DATA_PATH="$3"
+
+mkdir $DATA_PATH
 cd $DATA_PATH
 
 MYSQL_HOST="$4"
@@ -32,22 +34,13 @@ sep
 
 
 # Check if MySQL logging is enabled
-mysql_logging_status=$(mysql -u "$MYSQL_USER" --password="$MYSQL_PASSWORD" -h "$MYSQL_HOST" -e "SHOW VARIABLES LIKE 'general_log';" | awk '$1=="general_log" {print $2}')
 
-if [ "$mysql_logging_status" == "OFF" ]; then
-    read -p "MySQL logging is currently disabled. Do you want to enable it? (y/N)" enable_logging
-    dash_sep
-    if [ "$enable_logging" == "y" ] || [ "$enable_logging" == "Y" ]; then
-        # Enable MySQL logging
-        mysql -u "$MYSQL_USER" --password="$MYSQL_PASSWORD" -h "$MYSQL_HOST" -e "SET GLOBAL general_log = 'ON';"
+mysql -u "$MYSQL_USER" --password="$MYSQL_PASSWORD" -h "$MYSQL_HOST" -e "SET GLOBAL general_log = 'ON';"
+mysql -u "$MYSQL_USER" --password="$MYSQL_PASSWORD" -h "$MYSQL_HOST" -e "SET GLOBAL log_output = 'FILE';"
+mysql -u "$MYSQL_USER" --password="$MYSQL_PASSWORD" -h "$MYSQL_HOST" -e "SET GLOBAL general_log_file = '/var/log/mysql.log'"
         
-        echo "MySQL logging has been enabled."
-    else
-        echo "MySQL logging remains disabled."
-    fi
-else
-    echo "MySQL logging is already enabled."
-fi
+echo "MySQL logging has been enabled. Log file is on /var/log/mysql.log"
+
 sep
 
 
@@ -71,7 +64,7 @@ fi
 while read selected_db; do
     
     sep
-    echo "Enumerating $selected_db.txt" 
+    echo "Enumerating $selected_db into $DATA_PATH/$selected_db.txt" 
 
     echo "GRANTS FOR DATABASE: $selected_db" > $selected_db.txt
     sep >> $selected_db.txt

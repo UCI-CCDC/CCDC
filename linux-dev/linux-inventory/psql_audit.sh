@@ -6,7 +6,7 @@ if [ "$(id -u)" -ne 0 ]; then
 fi
 
 if [ "$#" -ne 4 ]; then
-    echo "Usage: $0 <psql_user> <psql_password> <psql host> <data_path>"
+    echo "Usage: $0 <psql_user> <psql_password> <data_path> <psql host>"
     exit 1
 fi
 
@@ -14,10 +14,12 @@ fi
 
 PSQL_USER="$1"
 export PGPASSWORD="$2"
-PSQL_HOST="$3"
-DATA_PATH="$4"
+PSQL_HOST="$4"
+DATA_PATH="$3"
 echo "PSQL Auditing"
 
+
+mkdir $DATA_PATH
 cd $DATA_PATH
 
 # List all databases
