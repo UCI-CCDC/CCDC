@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+if ! [ -z "$1" ]; then
+    find_path="$1"
+fi
 
 grep_for_phone_numbers() {
     grep -Eo '(\([0-9]{3}\) |[0-9]{3}-)[0-9]{3}-[0-9]{4}' $1 2>/dev/null
@@ -23,6 +26,11 @@ search() {
     grep_for_social_security_numbers $1
     find_interesting_files_by_extension $1
 }
+
+if ! [ -z "$find_path" ]; then
+    echo "[+] Searching $find_path for PII."
+    search $find_path
+fi
 
 # look in /home
 echo "[+] Searching /home for PII."
