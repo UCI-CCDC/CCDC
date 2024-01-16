@@ -75,6 +75,9 @@ Write-Output "Running Processes:" | Out-File -FilePath log.txt -Append
 Write-Output "" | Out-File -FilePath log.txt -Append
 #>
 
+#Get SMB shares
+Get-SmbShare | Out-File -FilePath log.txt -Append
+
 #Get DNS records if DC
 $DC = Get-WmiObject -Query "select * from Win32_OperatingSystem where ProductType='2'"
 if ($DC) {
@@ -82,7 +85,7 @@ if ($DC) {
 
     Write-Output "`n#### Start DNS Records ####" | Out-File -FilePath log.txt -Append
     try {
-        Get-DnsServerResourceRecord -ZoneName $($(Get-ADDomain).DNSRoot) | ? {$_.RecordType -notmatch "SRV|NS|SOA" -and $_.HostName -notmatch "@|DomainDnsZones|ForestDnsZones"} | Format-Table | Out-File -FilePath log.txt -Append
+        Get-DnsServerResourceRecord -ZoneName $($(Get-ADDomain).DNSRoot) | ? {$_.RecordType -notmatch "SRV|NS|SOA" -and $_.HostName -notmatch "@|DomainDnsZones|ForestDnsZones"} | Format-Table -Wrap -AutoSize | Out-File -FilePath log.txt -Append
     }
     catch {
         Write-Output "[ERROR] Failed to get DNS records, DC likely too old" | Out-File -FilePath log.txt -Append

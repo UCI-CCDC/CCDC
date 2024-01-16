@@ -82,7 +82,6 @@ def add_host(ip: str, username: str, password: str, port: int) -> None:
         file.write(f"{ip} {username} {password} {str(port)}\n")
     file.close()
 
-#script.sh;192.168.220.12,192.168.220.13;arg1,arg2,arg3
 def execute(exec_string: str) -> None:
     script, hosts, env_vars = None, None, None
     script = exec_string.split(':')[0]
