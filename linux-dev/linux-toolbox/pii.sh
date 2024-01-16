@@ -5,15 +5,24 @@ if ! [ -z "$1" ]; then
 fi
 
 grep_for_phone_numbers() {
-    grep -Eo '(\([0-9]{3}\) |[0-9]{3}-)[0-9]{3}-[0-9]{4}' $1 2>/dev/null
+    grep -REo '(\([0-9]{3}\) |[0-9]{3}-)[0-9]{3}-[0-9]{4}' $1 2>/dev/null
 }
 
 grep_for_email_addresses() {
-    grep -Eo '[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}' $1 2>/dev/null
+    grep -REo '[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}' $1 2>/dev/null
 }
 
 grep_for_social_security_numbers() {
-    grep -Eo '[0-9]{3}-[0-9]{2}-[0-9]{4}' $1 2>/dev/null
+    grep -REo '[0-9]{3}-[0-9]{2}-[0-9]{4}' $1 2>/dev/null
+}
+
+
+grep_for_credit_card_numbers() {
+    grep -REo '^(?:\d{4}-?){3}\d{4}$|^(?:\d{4}\s?){3}\d{4}$|^(?:\d{4}){4}$' $1 2>/dev/null
+}
+
+grep_for_vehicle_regisration_numbers() {
+    grep -REo '[A-Z]{1,2}[0-9]{1,2}\s?[A-Z]{1,3}\s?[0-9]{1,4}' $1 2>/dev/null
 }
 
 find_interesting_files_by_extension() {
@@ -25,6 +34,8 @@ search() {
     grep_for_email_addresses $1
     grep_for_social_security_numbers $1
     find_interesting_files_by_extension $1
+    grep_for_credit_card_numbers $1
+    grep_for_vehicle_regisration_numbers $1
 }
 
 if ! [ -z "$find_path" ]; then
