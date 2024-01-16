@@ -19,3 +19,4 @@ if command -v chpasswd >/dev/null 2>&1; then
 else
   printf "%s\n%s\n" "$password" "$password" | passwd "$username"
 fi
+echo "COMPLETED"

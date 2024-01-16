@@ -20,10 +20,14 @@ def change_all_root_passwords(data: dict) -> None:
             utils.log(f"Failed to change {username}'s password on {ip} to {new_password} ({pass_num}) from {password} | port: {port}")
             continue
 
-        printer.message(f"Changed {username}'s password on {ip} to {new_password} ({pass_num}) | port: {port}", dominion.SUCCESS)
-        utils.log(f"Changed {username}'s password on {ip} to {new_password} ({pass_num}) from {password} | port: {port}")
-        update_password_in_config(ip, username, new_password, port)
-        remove_used_password(new_password)
+        if utils.yes_or_no(f"Did the script run successfully?"): 
+            printer.message(f"Changed {username}'s password on {ip} to {new_password} ({pass_num}) | port: {port}", dominion.SUCCESS)
+            utils.log(f"Changed {username}'s password on {ip} to {new_password} ({pass_num}) from {password} | port: {port}")
+            update_password_in_config(ip, username, new_password, port)
+            remove_used_password(new_password)
+        else:
+            printer.message(f"Failed to change {username}'s password on {ip} to {new_password} ({pass_num}) | port: {port}", dominion.ERROR)
+            utils.log(f"Failed to change {username}'s password on {ip} to {new_password} ({pass_num}) from {password} | port: {port}")
 
 def get_random_password() -> str:
     with open(dominion.PASSWORDS_DB, 'r') as file:
