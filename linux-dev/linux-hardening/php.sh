@@ -2,7 +2,7 @@
 
 
 
-sys=$(command -v service || command -v systemctl)
+sys=$(command -v service || command -v systemctl || command -v rc-service)
 
 
 
@@ -54,6 +54,11 @@ fi
 if [ -d /etc/httpd ]; then
 	$sys httpd restart || $sys restart httpd
 	echo httpd restarted
+fi
+
+if [ -d /etc/lighttpd ]; then
+	$sys lighttpd restart || $sys restart lighttpd
+	echo lighttpd restarted
 fi
 
 if [ -d /etc/php/*/fpm ]; then
