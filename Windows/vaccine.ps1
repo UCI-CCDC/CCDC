@@ -39,12 +39,16 @@ $registryChanges = @(
         ValueType = "REG_DWORD"
         ValueData = 0
     },
+
+    # SMBv1 Disable 
     @{
         Key = "HKLM\SYSTEM\CurrentControlSet\Control\Services\LanmanServer\Parameters"
         ValueName = "SMB1"
         ValueType = "REG_DWORD"
         ValueData = 1
     },
+
+    # Hashing
     @{
         Key = "HKLM\SYSTEM\CurrentControlSet\Control\Lsa"
         ValueName = "NoLMHash"
@@ -57,6 +61,8 @@ $registryChanges = @(
         ValueType = "REG_DWORD"
         ValueData = 5
     },
+
+    # Anon Login
     @{
         Key = "HKLM\SYSTEM\CurrentControlSet\Control\Lsa"
         ValueName = "restrictanonymous"
@@ -69,6 +75,8 @@ $registryChanges = @(
         ValueType = "REG_DWORD"
         ValueData = 0
     },
+
+    # Disable Keys
     @{
         Key = "HKCU\Control Panel\Accessibility\StickyKeys"
         ValueName = "Flags"
@@ -93,12 +101,16 @@ $registryChanges = @(
         ValueType = "REG_DWORD"
         ValueData = 0
     },
+
+    # Disable floppy disk remoting
     @{
         Key = "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
         ValueName = "AllocateFloppies"
         ValueType = "REG_DWORD"
         ValueData = 1
     },
+
+    # Enable SMB Signing (prevent smb ntlm relaying attacks)
     @{
         Key = "HKLM\SYSTEM\CurrentControlSet\Control\Services\LanmanServer\Parameters"
         ValueName = "EnableSecuritySignature"
@@ -123,27 +135,43 @@ $registryChanges = @(
         ValueType = "REG_DWORD"
         ValueData = 1
     },
+
+    # Prevent print driver installs 
     @{
         Key = "HKLM\SYSTEM\CurrentControlSet\Control\Print\Providers\LanMan Print Services\Servers"
         ValueName = "AddPrinterDrivers"
         ValueType = "REG_DWORD"
         ValueData = 1
     },
+
+    # Local account blank passwords
     @{
         Key = "HKLM\SYSTEM\CurrentControlSet\Control\Lsa"
         ValueName = "LimitBlankPasswordUse"
         ValueType = "REG_DWORD"
         ValueData = 1
     },
+
+    # Enable full UAC
     @{
         Key = "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System"
         ValueName = "PromptOnSecureDesktop"
         ValueType = "REG_DWORD"
         ValueData = 1
     },
+
+    # Enable installer detections
     @{
         Key = "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System"
         ValueName = "EnableInstallerDetection"
+        ValueType = "REG_DWORD"
+        ValueData = 1
+    },
+
+    # Anon enumeration prevention
+    @{
+        Key = "HKLM\SYSTEM\CurrentControlSet\Control\Lsa"
+        ValueName = "restrictanonymous"
         ValueType = "REG_DWORD"
         ValueData = 1
     },
@@ -153,18 +181,24 @@ $registryChanges = @(
         ValueType = "REG_DWORD"
         ValueData = 1
     },
+
+    # Domain cred storing 
     @{
         Key = "HKLM\SYSTEM\CurrentControlSet\Control\Lsa"
         ValueName = "disabledomaincreds"
         ValueType = "REG_DWORD"
         ValueData = 1
     },
+
+    # No perms to anons
     @{
         Key = "HKLM\SYSTEM\CurrentControlSet\Control\Lsa"
         ValueName = "everyoneincludesanonymous"
         ValueType = "REG_DWORD"
         ValueData = 0
     },
+
+    # SMB strengtheners
     @{
         Key = "HKLM\SYSTEM\CurrentControlSet\services\LanmanWorkstation\Parameters"
         ValueName = "EnablePlainTextPassword"
@@ -183,6 +217,8 @@ $registryChanges = @(
         ValueType = "REG_MULTI_SZ"
         ValueData = @("")
     },
+
+    # Remote registry path denial
     @{
         Key = "HKLM\SYSTEM\CurrentControlSet\Control\SecurePipeServers\winreg\AllowedExactPaths"
         ValueName = "Machine"
@@ -195,6 +231,8 @@ $registryChanges = @(
         ValueType = "REG_MULTI_SZ"
         ValueData = @("")
     },
+
+    # Require UAC
     @{
         Key = "HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\System"
         ValueName = "EnableLUA"
@@ -207,24 +245,32 @@ $registryChanges = @(
         ValueType = "REG_DWORD"
         ValueData = 0
     },
+
+    # Enable LSASS Memory Protection
     @{
         Key = "HKLM\SYSTEM\CurrentControlSet\Control\Lsa"
         ValueName = "RunAsPPL"
         ValueType = "REG_DWORD"
         ValueData = 1
     },
+
+    # Enable Credential Guard
     @{
         Key = "HKLM\SYSTEM\CurrentControl\Control\Lsa"
         ValueName = "LsaCfgFlags"
         ValueType = "REG_DWORD"
         ValueData = 1
     },
+
+    # Disable plain text passwords stored in LSASS
     @{
         Key = "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\WDigest"
         ValueName = "UseLogonCredential"
         ValueType = "REG_DWORD"
         ValueData = 0
     },
+
+    # Enable PowerShell Logging
     @{
         Key = "HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\PowerShell\ModuleLogging"
         ValueName = "EnableModuleLogging"
