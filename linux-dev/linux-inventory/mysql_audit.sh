@@ -33,7 +33,7 @@ echo "MySQL Auditing"
 sep
 
 
-# Check if MySQL logging is enabled
+# Make sure MySQL logging is enabled
 
 mysql -u "$MYSQL_USER" --password="$MYSQL_PASSWORD" -h "$MYSQL_HOST" -e "SET GLOBAL general_log = 'ON';"
 mysql -u "$MYSQL_USER" --password="$MYSQL_PASSWORD" -h "$MYSQL_HOST" -e "SET GLOBAL log_output = 'FILE';"
@@ -49,7 +49,7 @@ mysql -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" -h "$MYSQL_HOST" -e "SHOW DATABASES;"
 
 
 
-# Echo statement informing the user
+# Get a list of all users
 
 mysql -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" -h "$MYSQL_HOST" -e "SELECT user, host FROM mysql.user;" | tail -n +2 | grep -vE '^performance|^mysql' > user_list.txt
 
