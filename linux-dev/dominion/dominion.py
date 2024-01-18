@@ -9,6 +9,7 @@ import os
 IP_USER_MAP = "conf/dominion.conf"
 PASSWORDS_DB = "conf/passwords.db"
 LOG_FILE = "log/dominion.log"
+BINARY = "../coordinate/coordinate-linux"
 WARNING = "WARNING"
 SUCCESS = "SUCCESS"
 ERROR = "ERROR"

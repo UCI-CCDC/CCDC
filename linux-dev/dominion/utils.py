@@ -27,9 +27,9 @@ def log(string: str) -> None:
 
 def run_script(ip: str, username: str, password: str, port: int, script: str, env_vars=None) -> None:
     if env_vars:
-        os.system(f"../coordinate/coordinate -t {ip} -u {username} -p {password} -E {env_vars} -P {port} -T 60 -R -S -y {script}")
+        os.system(f"{dominion.BINARY} -t {ip} -u {username} -p {password} -E {env_vars} -P {port} -T 60 -R -S -y {script}")
     else:
-        os.system(f"../coordinate/coordinate -t {ip} -u {username} -p {password} -P {port} -T 60 -R -S -y {script}")
+        os.system(f"{dominion.BINARY} -t {ip} -u {username} -p {password} -P {port} -T 60 -R -S -y {script}")
 
 def run_script_against_all_hosts(script: str) -> None:
     data = read_all()
