@@ -9,6 +9,7 @@ Modified by Payton Erickson for use in Cybersecurity competitions
 - Semi-Well tested
 - Some dependencies
 - No Input validation
+- Custom seed input
 - Secret sanitization (might still work)
 - Include characters/words/syllables in random positions
 - Exclude any undesired character/word/syllable
