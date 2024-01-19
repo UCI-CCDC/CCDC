@@ -25,7 +25,7 @@ for file in $(find / -name 'php.ini' 2>/dev/null); do
 	echo "expose_php = Off" >> $file
 	echo "track_errors = Off" >> $file
 	echo "html_errors = Off" >> $file
-	echo "display_errors = Of" >> $file
+	echo "display_errors = Off" >> $file
 	echo "magic_quotes_gpc = Off " >> $file
 	echo "allow_url_fopen = Off" >> $file
 	echo "allow_url_include = Off" >> $file
