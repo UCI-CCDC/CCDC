@@ -13,7 +13,7 @@ Modified by Payton Erickson for use in Cybersecurity competitions
 - Include characters/words/syllables in random positions
 - Exclude any undesired character/word/syllable
 - **Password**:
-    * Different [levels](#password-levels) (custom levels can be used as well)
+    * Different levels (custom levels can be used as well)
     * Enable/disable character repetition
 - **Passphrase**:
     * Choose between Word, Syllable or No list options to generate the passphrase
@@ -64,8 +64,6 @@ func main() {
     // aei/jwyjidaasres/duii/rscfiotuuckm/ydsiacf/ora/yywu
 }
 ```
-
-Head over [example_test.go](/example_test.go) to see more examples.
 
 ## Documentation
 
