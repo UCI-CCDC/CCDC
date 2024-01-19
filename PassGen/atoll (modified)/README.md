@@ -1,33 +1,30 @@
-# Atoll
-
-[![PkgGoDev](https://pkg.go.dev/badge/github.com/GGP1/atoll)](https://pkg.go.dev/github.com/GGP1/atoll)
-[![Go Report Card](https://goreportcard.com/badge/github.com/GGP1/atoll)](https://goreportcard.com/report/github.com/GGP1/atoll)
+# Atoll (modified)
 
 Atoll is a library for generating cryptographically secure and highly random secrets.
+Modified by Payton Erickson for use in Cybersecurity competitions
 
 ## Features
 
 - High level of randomness
-- Well tested
-- No dependencies
-- Input validation
-- Secret sanitization
+- Semi-Well tested
+- Some dependencies
+- No Input validation
+- Custom seed input
+- Secret sanitization (might still work)
 - Include characters/words/syllables in random positions
 - Exclude any undesired character/word/syllable
 - **Password**:
-    * 5 different [levels](#password-levels) (custom levels can be used as well)
+    * Different levels (custom levels can be used as well)
     * Enable/disable character repetition
 - **Passphrase**:
     * Choose between Word, Syllable or No list options to generate the passphrase
     * Custom word/syllable separator
-
-## Installation
-
-```
-go get -u github.com/GGP1/atoll
-```
+    * Custom wordlists
+    * Choose between Wordlists with capitals, random number, or both!
 
 ## Usage
+
+download the directory into src/atoll
 
 ```go
 package main
@@ -36,7 +33,7 @@ import (
     "fmt"
     "log"
 
-    "github.com/GGP1/atoll"
+    "atoll"
 )
 
 func main() {
@@ -69,8 +66,6 @@ func main() {
 }
 ```
 
-Head over [example_test.go](/example_test.go) to see more examples.
-
 ## Documentation
 
 ### Password levels
@@ -85,7 +80,7 @@ Atoll guarantees that the password will contain at least one of the characters o
 
 ### Passphrases options
 
-Atoll offers 3 ways of generating a passphrase:
+Atoll offers ways of generating a passphrase:
 
 - **Without** a list (*NoList*): generates random numbers that determine the word length (between 3 and 12 letters) and if the letter is either a vowel or a constant. Note that using a list makes the potential attacker job harder.
 
@@ -93,11 +88,13 @@ Atoll offers 3 ways of generating a passphrase:
     
 - With a **Syllable** list (*SyllableList*): random syllables are taken from a 10,129 long syllable list.
 
+- And more!
+
 ### Randomness
 
 > Randomness is a measure of the observer's ignorance, not an inherent quality of a process.
 
-Atoll uses the "crypto/rand" package to generate **cryptographically secure** random numbers.
+Atoll (modified) uses the "math/rand/v2" package to generate **cryptographically secure pseudo random numbers**.
 
 ### Entropy
 
@@ -127,4 +124,4 @@ In 2019 a record was set for a computer trying to generate every conceivable pas
 
 ## License
 
-Atoll is licensed under the [MIT](/LICENSE) license.
+Atoll (modified) is licensed under the [MIT](/LICENSE) license.
