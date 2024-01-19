@@ -3,7 +3,7 @@ Changes passwords for all domain users given a csv file.
 #>
 
 param(
-    [Paramter(mandatory=$true)]
+    [Parameter(mandatory=$true)]
     [string]$domain,
 
     [Parameter(mandatory=$true)]
@@ -20,17 +20,25 @@ $password_list = Import-Csv $csvPath
 $users = Get-ADUser -Filter * -SearchBase $domain -Properties DistinguishedName
 
 # Path defaults to "C:\", use -path parameter to set custom path (e.g. C:\Users\gmoment)
-$csvPasswordFile = ""$env:USERPROFILE\Desktop""
-if(!$path.Equals("")) {
+$csvPasswordFile = "$env:USERPROFILE\Desktop"
+if(!$csvPath.Equals("")) {
     $csvPasswordFile = $outPath
 }
 $csvPasswordFile += "\UsersNewPasswords.csv"
+if (Test-Path $csvPasswordFile) {
+    del $csvPasswordFile
+}
 New-Item $csvPasswordFile -ItemType File
 
 # Loop through users and change passwords
 $i = 0
 foreach($user in $users) {
-    $password = $passwords[$i].password
+    $password = $password_list[$i].password
+
+    if (!$password) {
+        Write-Error "NULL PASSWORD DETECTED. TERMINATING"
+        exit
+    }
 
     #Currently this code uses the Distinguished name becsaue it is garuenteed to be unique, this can be changed
     $dist_name = $user | Select-Object -expand DistinguishedName
@@ -40,6 +48,7 @@ foreach($user in $users) {
     
     Set-ADAccountPassword -Identity $dist_name -Reset -NewPassword (ConvertTo-SecureString -AsPlainText $password -Force)
 
-    Write-Output "$name's password changed"
+    # FOR DEBUGGING!!!
+    # Write-Output "$name's password changed to $password"
     $i++
 }
