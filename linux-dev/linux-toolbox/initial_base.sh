@@ -122,6 +122,22 @@ else
 fi
 sep
 
+# backup /etc/pam.d if it is non-empty
+pam_d_dir="/etc/pam.d"
+if [ -d "$pam_d_dir" ] && [ "$(ls -A "$pam_d_dir")" ]; then
+    echo "Backing up $pam_d_dir..."
+    tar -czf "$backup_dir/etc_pam.d.tar.gz" -C /etc pam.d
+    if [ $? -eq 0 ]; then
+        chmod 600 "$backup_dir/etc_pam.d.tar.gz"
+        echo "Done backing up $pam_d_dir."
+    else
+        echo "[!] Error: Failed to create backup for $pam_d_dir."
+        exit 1
+    fi
+else
+    echo "[-] $pam_d_dir is empty or not found. Skipping backup."
+fi
+
 # Backup current user's .profile
 user_profile="$HOME/.profile"
 if [ -f "$user_profile" ]; then
