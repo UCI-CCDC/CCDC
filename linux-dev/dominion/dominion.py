@@ -75,8 +75,8 @@ def main() -> None:
     if args.normalize:
         utils.run_script_against_all_hosts("../linux-toolbox/normalize.sh")
 
-    if args.generalbackup:
-        utils.run_script_against_all_hosts("../linux-toolbox/general_backup.sh")
+    if args.intialbase:
+        utils.run_script_against_all_hosts("../linux-toolbox/initial_base.sh")
 
     if args.execute:
         utils.execute(args.execute)
