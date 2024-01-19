@@ -17,7 +17,7 @@ get_users() {
 }
 
 command_exists() {
-  command -v "$1" &> /dev/null
+  command -v "$1" > /dev/null 2>&1
 }
 
 # POSIX moment
@@ -64,8 +64,10 @@ echo "Open ports and PIDs:"
 dash_sep
 if command_exists ss; then
     ss -tulpn | sort -k 1,1 -k 2,2 | awk 'NR==1; NR>1{print | "sort -V -k 4,4"}' | sed '1 s/Process/Process                     /'
+elif command_exists sockstat; then
+    sockstat -4
 elif command_exists netstat; then
-    netstat -tulpn
+    netstat -an | grep LISTEN
 elif command_exists lsof; then
     lsof -i -P -n | grep LISTEN
 else

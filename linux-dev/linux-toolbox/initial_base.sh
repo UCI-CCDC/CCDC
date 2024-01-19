@@ -224,10 +224,26 @@ sep
 echo "Baselining network, kernel mods and processes..."
 
 mkdir "$backup_dir/baseline"
-ss -plunt > "$backup_dir/baseline/listening"
-ss -peunt > "$backup_dir/baseline/established"
+
+
 lsmod > "$backup_dir/baseline/kmods"
 ps auxf > "$baselinePath/baseline/processes"
+
+command_exists() {
+    command -v "$1" > /dev/null 2>&1
+}
+if command_exists ss; then
+    ss -plunt > "$backup_dir/baseline/listening"
+    ss -peunt > "$backup_dir/baseline/established"
+elif command_exists sockstat; then
+    sockstat -4l > "$backup_dir/baseline/listening"
+    sockstat -4c > "$backup_dir/baseline/connected"
+else
+    netstat -an | grep LISTEN > "$backup_dir/baseline/listening"
+fi
+# netstat -plt > "$backup_dir/baseline/listening"
+# netstat -pat | grep ESTABLISHED > "$backup_dir/baseline/listening"
+# netstat -a | grep LISTEN > "$backup_dir/baseline/listening"
 
 echo "Done baselining the system at $backup_dir/baseline."
 sep
