@@ -9,7 +9,7 @@ dash_sep () {
 }
 
 command_exists() {
-  command -v "$1" &> /dev/null
+  command -v "$1" > /dev/null 2>&1
 }
 
 if [ "$(id -u)" -ne 0 ]; then
