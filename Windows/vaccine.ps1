@@ -1,5 +1,5 @@
 <#
-Previously named security.bat, upgraded to be a PowerShell script
+Previously named security.bat, upgraded to be a PowerShell script with registry backups
 #>
 
 # REM  Run this script in an elevated CMD prompt
@@ -282,8 +282,27 @@ $registryChanges = @(
         ValueName = "EnableScriptBlockLogging"
         ValueType = "REG_DWORD"
         ValueData = 1
+    },
+
+    # NLA
+    @{
+        Key = "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp"
+        ValueName = "UserAuthentication"
+        ValueType = "REG_DWORD"
+        ValueData = 1
     }
 )
+
+$dns = (sc.exe query dns | findstr RUNNING)
+if ($dns) {
+    # SIGRED
+    $registryChanges += @{
+        Key = "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\DNS\Parameters"
+        ValueName = "TcpReceivePacketSize"
+        ValueType = "REG_DWORD"
+        ValueData = 0xFF00
+    }
+}
 
 if (!$Restore) {
     # Making changes here
@@ -331,6 +350,12 @@ if (!$Restore) {
             Write-Output "Modifying $($key)\$($valueName)..."
         }
         Invoke-Expression -Command $setValueCommand
+    }
+
+    # Restart DNS for SIGRED
+    if ($dns) {
+        net stop DNS
+        net start DNS
     }
 
     # net share admin$ /del
