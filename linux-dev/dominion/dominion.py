@@ -25,6 +25,7 @@ def main() -> None:
     parser.add_argument('-PII', '--pii', help=f'PII scan on all hosts in {IP_USER_MAP}', action='store_true')
     parser.add_argument('-N', '--normalize', help=f'normalize.sh all hosts in {IP_USER_MAP}', action='store_true')
     parser.add_argument('-IB', '--initialbase' , help=f'initial_base.sh all hosts in {IP_USER_MAP}', action='store_true')
+    parser.add_argument('-PASSES', '--passwords', help=f'pass.sh for all hosts in {IP_USER_MAP}', action='store_true')
 
     parser.add_argument('-E', '--execute', help=f'Execute script on provided hosts: -E=/path/to/script.sh:192.168.220.12,192.168.220.13:arg1,arg2,arg3', type=str)
 
@@ -75,8 +76,11 @@ def main() -> None:
     if args.normalize:
         utils.run_script_against_all_hosts("../linux-toolbox/normalize.sh")
 
-    if args.intialbase:
+    if args.initialbase:
         utils.run_script_against_all_hosts("../linux-toolbox/initial_base.sh")
+    
+    if args.passwords:
+        utils.run_script_against_all_hosts("../linux-hardening/pass.sh")
 
     if args.execute:
         utils.execute(args.execute)
