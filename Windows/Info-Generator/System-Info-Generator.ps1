@@ -24,6 +24,7 @@ $portLabels = @{
     "3268" = "LDAP"
     "3269" = "LDAPS"
     "3389" = "RDP"
+    "5357" = "Microsoft Network Discovery"
     "5985" = "WINRM"
     "5986" = "WINRM (Secure)"
     "8080" = "HTTP"
@@ -35,9 +36,10 @@ Write-Output "`nIP Address:" | Out-File -FilePath log.txt -Append
 ((Get-NetIPAddress -AddressFamily IPV4 -InterfaceAlias Ethernet*).IPAddress) | Out-File -FilePath log.txt -Append
 Write-Output "" | Out-File -FilePath log.txt -Append
 
-Write-Output "`nHostname/Domain:" | Out-File -FilePath log.txt -Append
+#Write-Output "`nHostname/Domain:" | Out-File -FilePath log.txt -Append
 #($env:computername) | Out-File -FilePath log.txt -Append
-Get-WmiObject -Namespace root\cimv2 -Class Win32_ComputerSystem | Select-Object Name, Domain | Out-File -FilePath log.txt -Append
+$stuff = Get-WmiObject -Namespace root\cimv2 -Class Win32_ComputerSystem
+Write-Output "Hostname:`n$($stuff.Name)`n`nDomain:`n$($stuff.Domain)" | Out-File -FilePath log.txt -Append
 Write-Output "" | Out-File -FilePath log.txt -Append
 
 #systeminfo | findstr /B /C:"OS Name" /C:"OS Version"
@@ -78,7 +80,7 @@ Write-Output "" | Out-File -FilePath log.txt -Append
 #Get SMB shares
 Get-SmbShare | Out-File -FilePath log.txt -Append
 
-#Get DNS records if DC
+#Get DNS records if DC (Credit: CPP Inv.ps1)
 $DC = Get-WmiObject -Query "select * from Win32_OperatingSystem where ProductType='2'"
 if ($DC) {
     Write-Output "`n#### DC Detected ####" | Out-File -FilePath log.txt -Append
@@ -93,7 +95,7 @@ if ($DC) {
     Write-Output "#### End DNS Records ####" | Out-File -FilePath log.txt -Append
 }
 
-## IIS
+## IIS (Credit CPP Inv.ps1)
 if (Get-Service -Name W3SVC -ErrorAction SilentlyContinue) {
     $IIS = $true
     Import-Module WebAdministration
@@ -151,9 +153,6 @@ if ($IIS) {
 #findstr /SI /M "password" *.xml *.ini *.txt
 # TODO: Add more PII searches
 #    - Search for unattened files
-
-
-
 
 Write-Output "----------------------------------------------------------------------------------------------------" | Out-File -FilePath log.txt -Append
 Write-Output "" | Out-File -FilePath log.txt -Append
