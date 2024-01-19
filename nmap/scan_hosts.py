@@ -25,7 +25,7 @@ class bcolors:
 def print_sep():
     print('=========================================================================================')
 
-def run_scan(subnet: str, ports: str, arguments, scan_name: str) -> str:
+def run_scan(subnet: str, arguments, scan_name: str) -> str:
     '''
     Takes in subnet in the form "172.16.100.0/24"
     runs a fast scan and then outputs results in xml format in the file: "nmap-fast-x.x.x.0.xml" and
@@ -33,7 +33,7 @@ def run_scan(subnet: str, ports: str, arguments, scan_name: str) -> str:
     '''
     file_to_write = f"nmap-{scan_name}-{subnet[:-3]}.xml"
 
-    args = ['nmap', '-p', ports, '--min-rate', '3000']
+    args = ['nmap', '--min-rate', '3000']
     args.extend(arguments)
     args.extend(['-oX', file_to_write, subnet])
         
@@ -60,7 +60,7 @@ def read_scan_file(filepath, identify_os_type: 'function') -> dict:
         os_type = identify_os_type(host)
         ip_address = get_ip_from_file(host)
         host_map[os_type].append(ip_address)
-        if check_if_web(host) and os_type == 'linux':
+        if os_type == 'linux' and check_if_web(host):
             web_hosts.append(ip_address)
     print(f'{bcolors.YELLOW}LINUX WEB HOSTS:{bcolors.ENDC}', web_hosts)
     return host_map
@@ -127,15 +127,17 @@ def merge_maps(host_maps: list[dict]) -> dict:
 
 def map_subnet_fast(subnet: str) -> dict:
 
-    fast_scan_file = run_scan(subnet, "22,80,88,135,443,445,3389,5985", ['-sV'], 'fast')
+    fast_scan_file = run_scan(subnet, ['-p', '22,80,88,135,443,445,3389,5985', '-sV'], 'fast')
     print(fast_scan_file)
     host_map = read_scan_file(fast_scan_file, get_os_from_fast_scan)
     return host_map
 
+
+
 def map_subnet_long(subnet: str) -> dict:
-    long_scan_file = run_scan(subnet, "22,80,88,135,443,445,3389,5985", ['-O', '-sV','-Pn'], 'long')
+    long_scan_file = run_scan(subnet, ['-p', "22,80,88,135,443,445,3389,5985", '-sV','-Pn'], 'long')
     print(long_scan_file)
-    host_map = read_scan_file(long_scan_file, get_os_from_os_scan)
+    host_map = read_scan_file(long_scan_file, get_os_from_fast_scan)
     return host_map
 
 
@@ -168,10 +170,36 @@ def discover_hosts(subnets: list[str], dominion_pass: str, subnet_func, host_fil
     else:
         print('Linux Machines:', merged_maps['linux'])
     
-    f = open(host_file, "w")
-    f.write(str(merged_maps))
+    f = open(host_file, "a")
+    s = str(merged_maps) + '\n'
+    f.write(s)
+    f.close()
 
 
+def read_service_scan(filepath):
+    tree = ET.parse(filepath)
+    root = tree.getroot()
+    for host in root.iter("host"):
+        ip_address = get_ip_from_file(host)
+        print(f'{ip_address}:')
+        for port_node in host.find("ports"):
+            s = port_node.find("state")
+            if s is not None:
+                serv = port_node.find('service')
+                attrib = serv.attrib
+                try:
+                    print(attrib['name'], attrib['product'], attrib['version'])
+                except:
+                    pass
+
+            # state = port_node.attrib["state"]
+            # if state == "open":
+            #     port_num = port_node.attrib["portid"]
+                
+
+        
+
+    
 
 
 if __name__ == '__main__':
@@ -180,11 +208,19 @@ if __name__ == '__main__':
     parser.add_argument('-d', '--dominion', type=str, required=False, help="The default password, so that linux machines can be dumped in dominion style")
 
     args = parser.parse_args()
+
+    print(f'{bcolors.OKGREEN}fast scan results:{bcolors.ENDC}')
+
     discover_hosts(args.subnets, args.dominion, map_subnet_fast, 'host-fast')
-    # print('fast finished')
+
+    print(f'{bcolors.OKCYAN}long scan results:{bcolors.ENDC}')
 
     discover_hosts(args.subnets, args.dominion, map_subnet_long, 'host-long')
-    # read_scan_file('nmap-long-10.100.101.0.xml', get_os_from_os_scan)
+
+    # run_scan(args.subnets, ['--top-ports=100', '-sV', '-sC', '-Pn'], f'longer')
+    # args = ['nmap', '--min-rate', '3000', '--top-ports=100', '-sV', '-oX', 'big-test.xml', '10.100.101.80']
+
+
 
     
 
