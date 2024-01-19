@@ -40,15 +40,22 @@ foreach($user in $users) {
         exit
     }
 
-    #Currently this code uses the Distinguished name becsaue it is garuenteed to be unique, this can be changed
-    $dist_name = $user | Select-Object -expand DistinguishedName
-    $name = $user | Select-Object -expand SamAccountName
-    #Add-content $csvPasswordFile ($hostname + "," + $name + "," + $password)
-    Add-content $csvPasswordFile ($name + "," + $password)
-    
-    Set-ADAccountPassword -Identity $dist_name -Reset -NewPassword (ConvertTo-SecureString -AsPlainText $password -Force)
+    if ($user.SID -match "-500$") {
+        $admin_pass = Read-Host "Enter Password for $($user.SamAccountName)" -AsSecureString
+        $dist_name = $user | Select-Object -expand DistinguishedName
+        $name = $user | Select-Object -expand SamAccountName
 
+        Set-ADAccountPassword -Identity $dist_name -Reset -NewPassword $admin_pass
+    }
+    else {
+        #Currently this code uses the Distinguished name becsaue it is garuenteed to be unique, this can be changed
+        $dist_name = $user | Select-Object -expand DistinguishedName
+        $name = $user | Select-Object -expand SamAccountName
+
+        Add-content $csvPasswordFile ($name + "," + $password)    
+        Set-ADAccountPassword -Identity $dist_name -Reset -NewPassword (ConvertTo-SecureString -AsPlainText $password -Force)
+        $i++
+    }
     # FOR DEBUGGING!!!
     # Write-Output "$name's password changed to $password"
-    $i++
 }
