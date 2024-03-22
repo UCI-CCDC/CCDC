@@ -2,7 +2,7 @@
 
 HOSTNAME=$(hostname || cat /etc/hostname)
 echo -e "HOST: $HOSTNAME"
-echo "------------------"
+echo "==================="
 
 if [ $# -eq 0 ]; then
     echo "Usage: $0 <svc_name>"
@@ -24,7 +24,11 @@ if [ "$svc_name" = "APACHE" ] ; then
 
     [ -e "/etc/httpd/conf/httpd.conf" ] && tail -n +1 /etc/httpd/conf/httpd.conf | grep -v '#' |grep -E '==>|VirtualHost|^[^[\t]ServerName|DocumentRoot|^[^[\t]ServerAlias|^[^[\t]*Proxy*'
 
+    [ -e "/etc/httpd/conf/httpd.conf" ] && tail -n +1 /etc/httpd/conf.d/* | grep -v '#' |grep -E '==>|Directory|VirtualHost|^[^[\t]ServerName|DocumentRoot|^[^[\t]ServerAlias|^[^[\t]*Proxy*'
+
+
     [ -e "/etc/apache2/httpd.conf" ] && tail -n +1 /etc/apache2/httpd.conf | grep -v '#' |grep -E '==>|VirtualHost|^[^[\t]ServerName|DocumentRoot|^[^[\t]ServerAlias|^[^[\t]*Proxy*'
+    
 
     [ -e "/etc/apache2/sites-enabled" ] && tail -n +1 /etc/apache2/sites-enabled/* | grep -v '#' |grep -E '==>|VirtualHost|^[^[\t]ServerName|DocumentRoot|^[^[\t]ServerAlias|^[^[\t]*Proxy*'
 
