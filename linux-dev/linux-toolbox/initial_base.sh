@@ -243,7 +243,7 @@ mkdir "$backup_dir/baseline"
 
 
 lsmod > "$backup_dir/baseline/kmods"
-ps auxf > "$baselinePath/baseline/processes"
+ps auxf > "$backup_dir/baseline/processes"
 
 command_exists() {
     command -v "$1" > /dev/null 2>&1
