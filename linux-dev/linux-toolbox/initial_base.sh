@@ -1,5 +1,9 @@
 #/usr/bin/env bash
 
+HOSTNAME=$(hostname || cat /etc/hostname)
+echo -e "HOST: $HOSTNAME"
+echo "------------------"
+
 sep () {
     echo "======================================================================================================="
 }

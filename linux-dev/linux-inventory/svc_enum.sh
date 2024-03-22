@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+HOSTNAME=$(hostname || cat /etc/hostname)
+echo -e "HOST: $HOSTNAME"
+echo "------------------"
+
 if [ $# -eq 0 ]; then
     echo "Usage: $0 <svc_name>"
     echo "SSH, FTP, APACHE, NGINX, SMB"
