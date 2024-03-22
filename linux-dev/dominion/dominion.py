@@ -19,6 +19,7 @@ def main() -> None:
 
     parser.add_argument('-R', '--rotate', help=f'Change all passwords in {IP_USER_MAP}', action='store_true')
     parser.add_argument('-I', '--inventory', help=f'Run Inventory on all hosts in {IP_USER_MAP}', action='store_true')
+    parser.add_argument('-B', '--basic', help=f'Run "basic" inventory on all hosts in {IP_USER_MAP}', action='store_true')
     parser.add_argument('-SSH', '--ssh', help=f'SSH hardening on all hosts in {IP_USER_MAP}', action='store_true')
     parser.add_argument('-PHP', '--php', help=f'PHP hardening on all hosts in {IP_USER_MAP}', action='store_true')
     parser.add_argument('-POL', '--pwpolicy', help=f'Password policy capture on all hosts in {IP_USER_MAP}', action='store_true')
@@ -60,7 +61,10 @@ def main() -> None:
 
     if args.inventory:
         utils.run_script_against_all_hosts("../linux-inventory/inventory.sh")
-    
+
+    if args.basic:
+        utils.run_script_against_all_hosts("../linux-inventory/basic.sh")
+
     if args.pii:
         utils.run_script_against_all_hosts("../linux-toolbox/pii.sh")
 
@@ -72,13 +76,13 @@ def main() -> None:
 
     if args.php:
         utils.run_script_against_all_hosts("../linux-hardening/php.sh")
-    
+
     if args.normalize:
         utils.run_script_against_all_hosts("../linux-toolbox/normalize.sh")
 
     if args.initialbase:
         utils.run_script_against_all_hosts("../linux-toolbox/initial_base.sh")
-    
+
     if args.passwords:
         utils.run_script_against_all_hosts("../linux-hardening/pass.sh")
 
