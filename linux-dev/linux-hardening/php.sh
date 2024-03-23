@@ -1,5 +1,8 @@
 #!/bin/bash
 
+HOSTNAME=$(hostname || cat /etc/hostname)
+echo -e "HOST: $HOSTNAME"
+echo "------------------"
 
 
 sys=$(command -v service || command -v systemctl || command -v rc-service)
