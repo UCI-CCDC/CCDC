@@ -54,7 +54,9 @@ if [ -d /etc/lighttpd ]; then
 	echo lighttpd restarted
 fi
 
-if [ -d /etc/php/*/fpm ]; then
-	$sys *php* restart || $sys restart *php*
-	echo php-fpm restarted
+file=$(find /etc -maxdepth 2 -type f -name 'php-fpm*' -print -quit)
+
+if [ -d /etc/php/*/fpm ] || [ -n "$file" ]; then
+        $sys *php* restart || $sys restart *php*
+        echo php-fpm restarted
 fi
