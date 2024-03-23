@@ -53,16 +53,26 @@ def read_scan_file(filepath, identify_os_type: 'function') -> dict:
      correct os type to returns a dictionary of the scan results based on OS type.
      It will also print out the hosts that have websites'''
     host_map = { 'windows': [],'windows-dc':[], 'linux': [], 'unknown': []}
-    web_hosts = []
+    linux_web_hosts = []
+    windows_web_hosts = []
+    unknown_web_hosts = []
     tree = ET.parse(filepath)
     root = tree.getroot()
     for host in root.iter("host"):
         os_type = identify_os_type(host)
         ip_address = get_ip_from_file(host)
         host_map[os_type].append(ip_address)
-        if os_type == 'linux' and check_if_web(host):
-            web_hosts.append(ip_address)
-    print(f'{bcolors.YELLOW}LINUX WEB HOSTS:{bcolors.ENDC}', web_hosts)
+        if check_if_web(host):
+            if os_type == 'linux':
+                linux_web_hosts.append(ip_address)
+            elif os_type == 'windows' or os_type == 'windows-dc':
+                windows_web_hosts.append(ip_address)
+            else:
+                unknown_web_hosts.append(ip_address)
+    
+    print(f'{bcolors.YELLOW}LINUX WEB HOSTS:{bcolors.ENDC}', linux_web_hosts)
+    print(f'{bcolors.OKBLUE}WINDOWS WEB HOSTS:{bcolors.ENDC}', windows_web_hosts)
+    print('UNKOWN WEB HOSTS:', unknown_web_hosts)
     return host_map
 
 
@@ -170,6 +180,9 @@ def discover_hosts(subnets: list[str], dominion_pass: str, subnet_func, host_fil
     else:
         print('Linux Machines:', merged_maps['linux'])
     
+    if subnet_func == map_subnet_fast:
+        print('Unknown machines: ', merged_maps['unknown'])
+    
     f = open(host_file, "a")
     s = str(merged_maps) + '\n'
     f.write(s)
@@ -212,6 +225,8 @@ if __name__ == '__main__':
     print(f'{bcolors.OKGREEN}fast scan results:{bcolors.ENDC}')
 
     discover_hosts(args.subnets, args.dominion, map_subnet_fast, 'host-fast')
+
+    print('\n===========================================================\n')
 
     print(f'{bcolors.OKCYAN}long scan results:{bcolors.ENDC}')
 
