@@ -24,4 +24,7 @@ for type in $keywords; do
         done <<< "$output"
     fi
 done
+
+chmod 600 -R $1
+
 echo "Backups made in $1"
