@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+HOSTNAME=$(hostname || cat /etc/hostname)
+echo -e "HOST: $HOSTNAME"
+echo "------------------"
+
 sys=$(command -v service)
 if [[ $? -ne 0 ]]; then
   sys=$(command -v systemctl)
