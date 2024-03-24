@@ -1,6 +1,6 @@
 param(
     [Parameter(Mandatory=$false)]
-    [String[]]$Path,
+    [String[]]$Path = "C:\",
 
     [Parameter(Mandatory=$false)]
     [switch]$Silent

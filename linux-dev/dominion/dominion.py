@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 import passwords
 import argparse
+import pathlib
 import printer
 import utils
 import os
 
-# GLOBALS
-IP_USER_MAP = "conf/dominion.conf"
-PASSWORDS_DB = "conf/passwords.db"
-LOG_FILE = "log/dominion.log"
-BINARY = "../coordinate/coordinate-linux"
+IP_USER_MAP = pathlib.Path("conf/dominion.conf")
+PASSWORDS_DB = pathlib.Path("conf/passwords.db")
+LOG_FILE = pathlib.Path("log/dominion.log")
+BINARY = pathlib.Path("../coordinate/coordinate-linux")
 WARNING = "WARNING"
 SUCCESS = "SUCCESS"
 ERROR = "ERROR"
@@ -60,31 +60,32 @@ def main() -> None:
         passwords.change_all_root_passwords(data)
 
     if args.inventory:
-        utils.run_script_against_all_hosts("../linux-inventory/inventory.sh")
+        utils.run_script_against_all_hosts(pathlib.Path("../linux-inventory/inventory.sh"))
+
 
     if args.basic:
-        utils.run_script_against_all_hosts("../linux-inventory/basic.sh")
+        utils.run_script_against_all_hosts(pathlib.Path("../linux-inventory/baseq.sh"))
 
     if args.pii:
-        utils.run_script_against_all_hosts("../linux-toolbox/pii.sh")
+        utils.run_script_against_all_hosts(pathlib.Path("../linux-toolbox/pii.sh"))
 
     if args.pwpolicy:
-        utils.run_script_against_all_hosts("../linux-toolbox/pw_pol.sh")
+        utils.run_script_against_all_hosts(pathlib.Path("../linux-toolbox/pw_pol.sh"))
 
     if args.ssh:
-        utils.run_script_against_all_hosts("../linux-hardening/ssh.sh")
+        utils.run_script_against_all_hosts(pathlib.Path("../linux-hardening/ssh.sh"))
 
     if args.php:
-        utils.run_script_against_all_hosts("../linux-hardening/php.sh")
+        utils.run_script_against_all_hosts(pathlib.Path("../linux-hardening/php.sh"))
 
     if args.normalize:
-        utils.run_script_against_all_hosts("../linux-toolbox/normalize.sh")
+        utils.run_script_against_all_hosts(pathlib.Path("../linux-toolbox/normalize.sh"))
 
     if args.initialbase:
-        utils.run_script_against_all_hosts("../linux-toolbox/initial_base.sh")
+        utils.run_script_against_all_hosts(pathlib.Path("../linux-toolbox/initial_base.sh"))
 
     if args.passwords:
-        utils.run_script_against_all_hosts("../linux-hardening/pass.sh")
+        utils.run_script_against_all_hosts(pathlib.Path("../linux-hardening/pass.sh"))
 
     if args.execute:
         utils.execute(args.execute)
