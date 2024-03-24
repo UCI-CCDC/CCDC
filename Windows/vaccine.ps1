@@ -45,7 +45,7 @@ $registryChanges = @(
         Key = "HKLM\SYSTEM\CurrentControlSet\Control\Services\LanmanServer\Parameters"
         ValueName = "SMB1"
         ValueType = "REG_DWORD"
-        ValueData = 1
+        ValueData = 0
     },
 
     # Hashing
@@ -209,13 +209,13 @@ $registryChanges = @(
         Key = "HKLM\SYSTEM\CurrentControlSet\services\LanmanServer\Parameters"
         ValueName = "NullSessionPipes"
         ValueType = "REG_MULTI_SZ"
-        ValueData = @("")
+        ValueData = "\0"
     },
     @{
         Key = "HKLM\SYSTEM\CurrentControlSet\services\LanmanServer\Parameters"
         ValueName = "NullSessionShares"
         ValueType = "REG_MULTI_SZ"
-        ValueData = @("")
+        ValueData = "\0"
     },
 
     # Remote registry path denial
@@ -223,13 +223,13 @@ $registryChanges = @(
         Key = "HKLM\SYSTEM\CurrentControlSet\Control\SecurePipeServers\winreg\AllowedExactPaths"
         ValueName = "Machine"
         ValueType = "REG_MULTI_SZ"
-        ValueData = @("")
+        ValueData = "\0"
     },
     @{
         Key = "HKLM\SYSTEM\CurrentControlSet\Control\SecurePipeServers\winreg\AllowedPaths"
         ValueName = "Machine"
         ValueType = "REG_MULTI_SZ"
-        ValueData = @("")
+        ValueData = "\0"
     },
 
     # Require UAC

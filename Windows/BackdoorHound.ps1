@@ -61,7 +61,7 @@ $users | ForEach-Object {
     $distanceFromMean = [Math]::Abs($companyLength - $comp_avg)
     $standardDeviationsAway = $distanceFromMean / $comp_sd
     if ($standardDeviationsAway -ge 2) {
-        Write-Output "User $($_.SamAccountName) has a company length of $descriptionLength, which is $standardDeviationsAway standard deviations away from the mean."
+        Write-Output "User $($_.SamAccountName) has a company length of $companyLength, which is $standardDeviationsAway standard deviations away from the mean."
         $global:sus_users += $_
     }
 }
@@ -72,7 +72,7 @@ $users | ForEach-Object {
     $distanceFromMean = [Math]::Abs($departmentLength - $dep_avg)
     $standardDeviationsAway = $distanceFromMean / $dep_sd
     if ($standardDeviationsAway -ge 2) {
-        Write-Output "User $($_.SamAccountName) has a department length of $descriptionLength, which is $standardDeviationsAway standard deviations away from the mean."
+        Write-Output "User $($_.SamAccountName) has a department length of $departmentLength, which is $standardDeviationsAway standard deviations away from the mean."
         $global:sus_users += $_
     }
 }
