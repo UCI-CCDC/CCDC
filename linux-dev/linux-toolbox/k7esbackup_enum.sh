@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-keywords="deployments statefulsets services ingress pv pvc"
+keywords="deployments statefulsets services ingress pv pvc secrets"
 
 for type in $keywords; do
     output=$(kubectl get $type --all-namespaces | awk 'NR>1 {print $1, $2}')
@@ -28,3 +28,4 @@ done
 chmod 600 -R $1
 
 echo "Backups made in $1"
+
