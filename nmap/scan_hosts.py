@@ -1,15 +1,10 @@
 
 import argparse
 import subprocess
-import threading
 import xml.etree.ElementTree as ET
-import time
 from multiprocessing import Manager
-
-# import concurrent.futures
-# from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import ProcessPoolExecutor
-
+from collections import defaultdict
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -23,7 +18,7 @@ class bcolors:
 
 
 def print_sep():
-    print('=========================================================================================')
+    print('\n===================================================\n')
 
 def run_scan(subnet: str, arguments, scan_name: str) -> str:
     '''
@@ -48,31 +43,29 @@ def run_scan(subnet: str, arguments, scan_name: str) -> str:
 
 
 
-def read_scan_file(filepath, identify_os_type: 'function') -> dict:
-    '''reads the scan results from filepath, and uses the function the identifies the 
-     correct os type to returns a dictionary of the scan results based on OS type.
-     It will also print out the hosts that have websites'''
-    host_map = { 'windows': [],'windows-dc':[], 'linux': [], 'unknown': []}
+def read_scan_file(filepath, print_web_hosts: bool) -> dict:
+    host_map = defaultdict(list)
     linux_web_hosts = []
     windows_web_hosts = []
     unknown_web_hosts = []
     tree = ET.parse(filepath)
     root = tree.getroot()
     for host in root.iter("host"):
-        os_type = identify_os_type(host)
+        os_type = get_os_from_fast_scan(host)
         ip_address = get_ip_from_file(host)
         host_map[os_type].append(ip_address)
+
         if check_if_web(host):
-            if os_type == 'linux':
+            if os_type == 'linux' or os_type == 'linux-domain':
                 linux_web_hosts.append(ip_address)
             elif os_type == 'windows' or os_type == 'windows-dc':
                 windows_web_hosts.append(ip_address)
             else:
                 unknown_web_hosts.append(ip_address)
-    
-    print(f'{bcolors.YELLOW}LINUX WEB HOSTS:{bcolors.ENDC}', linux_web_hosts)
-    print(f'{bcolors.OKBLUE}WINDOWS WEB HOSTS:{bcolors.ENDC}', windows_web_hosts)
-    print('UNKOWN WEB HOSTS:', unknown_web_hosts)
+    if print_web_hosts:
+        print(f'{bcolors.YELLOW}LINUX WEB HOSTS:{bcolors.ENDC}', linux_web_hosts)
+        print(f'{bcolors.OKBLUE}WINDOWS WEB HOSTS:{bcolors.ENDC}', windows_web_hosts)
+        print('UNKOWN WEB HOSTS:', unknown_web_hosts)
     return host_map
 
 
@@ -93,27 +86,21 @@ def get_os_from_fast_scan(host) -> str:
         if state == "open":
             port_num = port_node.attrib["portid"]
             open_ports.append(port_num)
-
-    if '88' in open_ports:
-        return 'windows-dc'
-    elif "3389" in open_ports or "5985" in open_ports or ("135" in open_ports and "445" in open_ports):
+    is_windows = "3389" in open_ports or "5985" in open_ports or ("135" in open_ports and "445" in open_ports)
+    is_linux = '22' in open_ports
+    if '88' in open_ports or '389' in open_ports:
+        if is_windows:
+            return 'windows-dc'
+        elif is_linux:
+            return 'linux-domain'
+        else:
+            return 'unkown-domain'
+    elif is_windows:
         return 'windows'
-    elif "22" in open_ports:
+    elif is_linux:
         return 'linux'
     return 'unknown'
-
-def get_os_from_os_scan(host) -> str:
-    os_node = host.find("os").find("osmatch")
-    if not os_node:
-        return 'unknown'
-
-    # nmap_confidence = os_node.attrib["accuracy"]
-    guess = os_node.attrib['name']
-    print(get_ip_from_file(host), ': ', guess)
-    return 'unknown'
     
-    
-
 
 def get_ip_from_file(host) -> str:
 
@@ -125,7 +112,7 @@ def get_ip_from_file(host) -> str:
 
 def merge_maps(host_maps: list[dict]) -> dict:
 
-    new_map = { 'windows': [], 'windows-dc': [], 'linux': [], 'unknown': []}
+    new_map = defaultdict(list)
     for host_map in host_maps:
         for os in host_map:
             new_map[os].extend(host_map[os])
@@ -135,34 +122,25 @@ def merge_maps(host_maps: list[dict]) -> dict:
     return new_map
 
 
-def map_subnet_fast(subnet: str) -> dict:
-
-    fast_scan_file = run_scan(subnet, ['-p', '22,80,88,135,443,445,3389,5985', '-sV'], 'fast')
-    print(fast_scan_file)
-    host_map = read_scan_file(fast_scan_file, get_os_from_fast_scan)
+def map_subnet(subnet: str, args: list[str], scan_name: str, print_web_hosts: bool) -> dict:
+    scan_file = run_scan(subnet, args, scan_name)
+    print(f'{scan_name} scan file: {scan_file}')
+    host_map = read_scan_file(scan_file, print_web_hosts)
     return host_map
 
 
-
-def map_subnet_long(subnet: str) -> dict:
-    long_scan_file = run_scan(subnet, ['-p', "22,80,88,135,443,445,3389,5985", '-sV','-Pn'], 'long')
-    print(long_scan_file)
-    host_map = read_scan_file(long_scan_file, get_os_from_fast_scan)
-    return host_map
+def add_to_hosts_maps(host_maps, subnet, args, scan_name, print_web_hosts):
+    h_map = map_subnet(subnet, args, scan_name, print_web_hosts)
+    host_maps.append(h_map)
 
 
-def add_to_hosts_maps(host_maps, subnet, scan_func):
-    map = scan_func(subnet)
-    host_maps.append(map)
-
-
-def discover_hosts(subnets: list[str], dominion_pass: str, subnet_func, host_file):
+def discover_hosts(subnets: list[str], args, dominion_pass: str, print_web_hosts: bool, scan_name):
 
     with Manager() as manager:
         host_maps = manager.list()
         with ProcessPoolExecutor() as executor:
             
-            procs = [executor.submit(add_to_hosts_maps, host_maps, subnet, subnet_func) for subnet in subnets.split(',')]
+            procs = [executor.submit(add_to_hosts_maps, host_maps, subnet, args, scan_name, print_web_hosts) for subnet in subnets.split(',')]
             for proc in procs:
                 result = proc.result()
         host_maps = list(host_maps)
@@ -171,43 +149,27 @@ def discover_hosts(subnets: list[str], dominion_pass: str, subnet_func, host_fil
     merged_maps = merge_maps(host_maps)
 
     print('Windows Machines:', merged_maps['windows'])
-    print('likely DC:', merged_maps['windows-dc'])
+    print('likely windows DC:', merged_maps['windows-dc'])
+
+    print('Linux domain', merged_maps['linux-domain'])
 
     if dominion_pass:
         print('Linux Machines:')
         for machine in merged_maps['linux']:
             print(machine, 'root', dominion_pass, 22)
+        for machine in merged_maps['linux-domain']:
+            print(machine, 'root', dominion_pass, 22)
     else:
         print('Linux Machines:', merged_maps['linux'])
     
-    if subnet_func == map_subnet_fast:
+    if scan_name == 'fast':
         print('Unknown machines: ', merged_maps['unknown'])
+        print('Unkown Domain:', merged_maps['unknown-domain'])
     
-    f = open(host_file, "a")
+    f = open(f'host-{scan_name}', "a")
     s = str(merged_maps) + '\n'
     f.write(s)
     f.close()
-
-
-def read_service_scan(filepath):
-    tree = ET.parse(filepath)
-    root = tree.getroot()
-    for host in root.iter("host"):
-        ip_address = get_ip_from_file(host)
-        print(f'{ip_address}:')
-        for port_node in host.find("ports"):
-            s = port_node.find("state")
-            if s is not None:
-                serv = port_node.find('service')
-                attrib = serv.attrib
-                try:
-                    print(attrib['name'], attrib['product'], attrib['version'])
-                except:
-                    pass
-
-            # state = port_node.attrib["state"]
-            # if state == "open":
-            #     port_num = port_node.attrib["portid"]
                 
 
         
@@ -219,25 +181,28 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', '--subnets', type=str, required=True, help="List of subnets to map, seperated by commas")
     parser.add_argument('-d', '--dominion', type=str, required=False, help="The default password, so that linux machines can be dumped in dominion style")
+    parser.add_argument('-w', '--web', action='store_true', required=False, help="set this to enable scanning for web hosts")
 
     args = parser.parse_args()
 
     print(f'{bcolors.OKGREEN}fast scan results:{bcolors.ENDC}')
 
-    discover_hosts(args.subnets, args.dominion, map_subnet_fast, 'host-fast')
+    nmap_args = ['-p', '22,88,135,389,445,3389,5985', '-sV']
 
-    print('\n===========================================================\n')
+    if args.web:
+        nmap_args[1] += ',80,443'
+
+    discover_hosts(args.subnets, nmap_args, args.dominion, args.web, 'fast')
+
+    print_sep()
+
+    nmap_args.append('-Pn')
 
     print(f'{bcolors.OKCYAN}long scan results:{bcolors.ENDC}')
 
-    discover_hosts(args.subnets, args.dominion, map_subnet_long, 'host-long')
+    discover_hosts(args.subnets, nmap_args, args.dominion, args.web, 'long')
 
-    # run_scan(args.subnets, ['--top-ports=100', '-sV', '-sC', '-Pn'], f'longer')
-    # args = ['nmap', '--min-rate', '3000', '--top-ports=100', '-sV', '-oX', 'big-test.xml', '10.100.101.80']
-
-
-
-    
+ 
 
 
 
