@@ -27,7 +27,6 @@ $csvPasswordFile = "$env:USERPROFILE\Desktop"
 if(!$csvPath.Equals("")) {
     $csvPasswordFile = $outPath
 }
-$csvPasswordFile += "\UsersNewPasswords.csv"
 if (Test-Path $csvPasswordFile) {
     Remove-Item $csvPasswordFile
 }
