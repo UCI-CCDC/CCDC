@@ -10,7 +10,10 @@ param(
     [string]$csvPath,
 
     [Parameter(mandatory=$false)]
-    [string]$outPath
+    [string]$outPath,
+
+    [Parameter(mandatory=$false)]
+    [string[]]$exclude
 )
 
 # Read from csv
@@ -26,7 +29,7 @@ if(!$csvPath.Equals("")) {
 }
 $csvPasswordFile += "\UsersNewPasswords.csv"
 if (Test-Path $csvPasswordFile) {
-    del $csvPasswordFile
+    Remove-Item $csvPasswordFile
 }
 New-Item $csvPasswordFile -ItemType File
 
@@ -40,12 +43,8 @@ foreach($user in $users) {
         exit
     }
 
-    if ($user.SID -match "-500$") {
-        $admin_pass = Read-Host "Enter Password for $($user.SamAccountName)" -AsSecureString
-        $dist_name = $user | Select-Object -expand DistinguishedName
-        $name = $user | Select-Object -expand SamAccountName
-
-        Set-ADAccountPassword -Identity $dist_name -Reset -NewPassword $admin_pass
+    if ($user.SamAccountName -in $exclude) {
+        continue
     }
     else {
         #Currently this code uses the Distinguished name becsaue it is garuenteed to be unique, this can be changed
