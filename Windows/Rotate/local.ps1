@@ -43,7 +43,7 @@ foreach($user in $users) {
         continue
     }
     else {
-        Add-content $csvPasswordFile ($name + "," + $password)    
+        Add-content $csvPasswordFile ($user + "," + $password)    
         net user $user $password > $null
         $i++
     }

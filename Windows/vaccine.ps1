@@ -345,7 +345,7 @@ if (!$Restore) {
         }
 
         # Modify the registry value
-        $setValueCommand = "reg ADD '$key' /v '$valueName' /t $($change.ValueType) /d $($change.ValueData) /f"
+        $setValueCommand = "reg add '$key' /v '$valueName' /t $($change.ValueType) /d $($change.ValueData) /f | Out-Null"
         if ($v) {
             Write-Output "Modifying $($key)\$($valueName)..."
         }
