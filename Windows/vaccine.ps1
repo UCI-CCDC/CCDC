@@ -358,8 +358,8 @@ if (!$Restore) {
         net start DNS
     }
 
-    # net share admin$ /del
-    # net share c$ /del
+    net share admin$ /del
+    net share c$ /del
     # reg delete hklm\software\microsoft\windows\currentversion\runonce /f
     # reg delete hklm\software\microsoft\windows\currentversion\run /f
     # del /S "C:\Users\Administrator\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\*"
