@@ -4,6 +4,7 @@ import argparse
 import pathlib
 import printer
 import utils
+import base
 import os
 
 IP_USER_MAP = pathlib.Path("conf/dominion.conf")
@@ -82,7 +83,8 @@ def main() -> None:
         utils.run_script_against_all_hosts(pathlib.Path("../linux-toolbox/normalize.sh"))
 
     if args.initialbase:
-        utils.run_script_against_all_hosts(pathlib.Path("../linux-toolbox/initial_base.sh"))
+        data = utils.read_all()
+        base.initial_base_across_boxes(data)
 
     if args.passwords:
         utils.run_script_against_all_hosts(pathlib.Path("../linux-hardening/pass.sh"))
