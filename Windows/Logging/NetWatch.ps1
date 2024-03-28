@@ -1,3 +1,14 @@
+param(
+    [Parameter(Mandatory=$false)]
+    [string]$outPath = "C:\Programdata\NetWatch-log.txt",
+
+    [Parameter(Mandatory=$false)]
+    [string]$filter = "^$",
+
+    [Parameter(Mandatory=$false)]
+    [switch]$v
+)
+
 Function Parse-Event {
     # Credit: https://github.com/RamblingCookieMonster/PowerShell/blob/master/Get-WinEventData.ps1
     param(
@@ -19,28 +30,27 @@ Function Parse-Event {
 }
 
 $ErrorActionPreference = "SilentlyContinue"
-$hashtable = @{logname="Microsoft-Windows-Sysmon/Operational"; ID=3}
-$init_cnt = 10
-$data = Get-WinEvent -FilterHashtable $hashtable -MaxEvents $init_cnt
-$data | Sort-Object RecordId | Out-Null
-$idx = $data[$init_cnt - 1].RecordId
+$LogName = "Microsoft-Windows-Sysmon"
+$maxRecordId = (Get-WinEvent -Provider $LogName -max 1).RecordID
 
 while ($True) {
     Start-Sleep 1
-    $new_idx = (Get-WinEvent -FilterHashtable $hashtable -MaxEvents 1).RecordId
-    if ($new_idx -gt $idx) {
-        $event_cnt = $new_idx - $idx
-        $logs = Get-WinEvent -FilterHashtable $hashtable -MaxEvents $event_cnt | Sort-Object RecordId
-        foreach ($log in $logs) {
-            $evt = $log | Parse-Event
-            Write-Output "       Time: $((Get-Date $evt.UtcTime).ToLocalTime().ToString())"
-            Write-Output "     Source: $($evt.SourceIp):$($evt.SourcePort)"
-            Write-Output "Destination: $($evt.DestinationIp):$($evt.DestinationPort)"
-            Write-Output "   Protocol: $($evt.Protocol)"
-            Write-Output "      Image: $($evt.Image)   PID: $($evt.ProcessId)   TID: $($evt.ThreadId)"
-            Write-Output "       User: $($evt.User)"
-            Write-Output "----------------------------------------"
+    $xPath = "*[System[EventRecordID > $maxRecordId]]"
+    $logs = Get-WinEvent -Provider $LogName -FilterXPath $xPath | Sort-Object RecordID
+    foreach ($log in $logs) {
+        $evt = $log | Parse-Event
+        if ($evt.id -eq 3) {
+            $output = "       Time: $((Get-Date $evt.UtcTime).ToLocalTime().ToString())`n"
+            $output += "     Source: $($evt.SourceIp):$($evt.SourcePort) ($($evt.SourceHostname))`n"
+            $output += "Destination: $($evt.DestinationIp):$($evt.DestinationPort) ($($evt.DestinationHostName))`n"
+            $output += "   Protocol: $($evt.Protocol)`n"
+            $output += "      Image: $($evt.Image) (PID: $($evt.ProcessId))`n"
+            $output += "       User: $($evt.User)`n"
+            $output += "----------------------------------------"
+            if ($output | ?{$_ -match $filter}) { continue }
+            Write-Output $output | Out-File $outPath -Append
+            if ($v) {Write-Output $output}
         }
+        $maxRecordId = $evt.RecordId
     }
-    $idx = $new_idx
 }
