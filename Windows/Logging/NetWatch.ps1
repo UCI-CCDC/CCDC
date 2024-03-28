@@ -6,7 +6,16 @@ param(
     [string]$filter = "^$",
 
     [Parameter(Mandatory=$false)]
-    [switch]$v
+    [string]$good = "^$",
+
+    [Parameter(Mandatory=$false)]
+    [string]$bad = "^$",
+
+    [Parameter(Mandatory=$false)]
+    [switch]$v,
+
+    [Parameter(Mandatory=$false)]
+    [switch]$NoWrite
 )
 
 Function Parse-Event {
@@ -48,8 +57,16 @@ while ($True) {
             $output += "       User: $($evt.User)`n"
             $output += "----------------------------------------"
             if ($output | ?{$_ -match $filter}) { continue }
-            Write-Output $output | Out-File $outPath -Append
-            if ($v) {Write-Output $output}
+            if (!$NoWrite) {Write-Output $output | Out-File $outPath -Append}
+            if ($v -or $NoWrite) {
+                if ($output | ?{$_ -match $good}) {
+                    Write-Host $output -ForegroundColor Green
+                } elseif ($output | ?{$_ -match $bad}) {
+                    Write-Host $output -ForegroundColor Red
+                } else {
+                    Write-Host $output
+                }
+            }
         }
         $maxRecordId = $evt.RecordId
     }
