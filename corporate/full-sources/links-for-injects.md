@@ -95,14 +95,21 @@
     Microsoft - Staying ahead of threat actors in the age of AI: https://www.microsoft.com/en-us/security/blog/2024/02/14/staying-ahead-of-threat-actors-in-the-age-of-ai/ 
 
 
-## Third-Party/External Applications
+Third-Party/External Applications
 
     Wazuh: https://documentation.wazuh.com/current/index.html 
         Wazuh Installation Guide: https://documentation.wazuh.com/current/installation-guide/index.html 
         Wazuh Use Cases: https://documentation.wazuh.com/current/getting-started/use-cases/index.html 
-    AWS Network and Application Protection: https://aws.amazon.com/products/security/network-application-protection/
-    AWS Amazon Elastic Container Service - Best Practices Guide: https://docs.aws.amazon.com/pdfs/AmazonECS/latest/bestpracticesguide/bestpracticesguide.pdf  
+    Rsyslog: https://www.rsyslog.com/doc/index.html 
+        Rsyslog Installation Guide: https://www.rsyslog.com/doc/installation/index.html 
+        Rsyslog Use Cases: https://www.rsyslog.com/doc/examples/index.html 
+    Filebeat: https://www.elastic.co/guide/en/beats/filebeat/current/index.html 
+        Winlogbeat/Sysmon Module: https://www.elastic.co/guide/en/beats/winlogbeat/current/winlogbeat-module-sysmon.html 
+        Sending Logs to ELK with Winlogbeat and Sysmon: https://burnhamforensics.com/2018/11/18/sending-logs-to-elk-with-winlogbeat-and-sysmon/ 
+    AWS Network and Application Protection: https://aws.amazon.com/products/security/network-application-protection/ 
+    AWS Amazon Elastic Container Service - Best Practices Guide: https://docs.aws.amazon.com/pdfs/AmazonECS/latest/bestpracticesguide/bestpracticesguide.pdf 
     Microsoft Security (general resources): https://learn.microsoft.com/en-us/security/ 
+ 
 
 
 ## OBS (Video Presentation)
