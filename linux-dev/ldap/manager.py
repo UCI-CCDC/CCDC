@@ -1,7 +1,7 @@
 import ldap3
 from ldap3 import Server, Connection, ALL, DsaInfo
-# from argparse import ArgumentParser
-
+import secrets
+import string
 class LdapManager:
 
     def __init__(self, ip_addr):
@@ -59,12 +59,20 @@ class LdapManager:
         else:
             print('Unable to change user password. Make sure you have proper privileges.')
 
-    def rotate_user_passwords(self, new_pass):
-        for user_dn in self._list_users_dn():
-            self._change_pass(user_dn, new_pass)
-            x = user_dn.split(',')
-            user_uid = x[0][4:]
-            print(f'{user_uid},{new_pass}')
+    def rotate_user_passwords(self, filepath):
+        with open(filepath, 'w') as file:
+            for user_dn in self._list_users_dn():
+                new_pass = ''.join(secrets.choice(string.ascii_letters + string.digits)for _ in range(15))
+                changed = self._change_pass(user_dn, new_pass)
+                if changed:
+                    x = user_dn.split(',')
+                    user_uid = x[0][4:]
+                    creds = f'{user_uid},{new_pass}'
+                    print(creds)
+                    file.write(creds + '\n')
+                else:
+                    print('Failed to change password of user:', user_dn)
+
 
     def _change_pass(self, dn, password):
         return self._conn.modify(dn, {'userPassword': [(ldap3.MODIFY_REPLACE, [password])]})

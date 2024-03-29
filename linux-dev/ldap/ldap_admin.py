@@ -40,7 +40,7 @@ if __name__ == "__main__":
     parser.add_argument("--set-admin", help = 'Set the admin user: --set-admin admin_dn:admin_password', type=str)
     parser.add_argument("--list-users", action = 'store_true', help = 'List all users')
     parser.add_argument("--set-password", help=f'Set password of user: --set-password user_dn:new_pass', type=str)
-    parser.add_argument("--rotate-passwords", help=f'Set password of all users: --rotate-password new_pass', type=str)
+    parser.add_argument("--rotate-passwords", help=f'Set password of all users and output to file: --rotate-password out.csv', type=str)
     parser.add_argument("--list-nodes", action = 'store_true', help = 'List all node DNs')
     parser.add_argument("--inspect", help = 'Inspect node: --inspect node_dn', type=str)
 
