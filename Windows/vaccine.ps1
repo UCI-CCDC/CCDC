@@ -335,8 +335,8 @@ if (!$Restore) {
         $valueName = $change.ValueName
         
         if (!$NoBackup) {
-            $backupFilePath = Join-Path -Path $backupPath -ChildPath "$($key.Replace('\', '_')).reg | Out-Null"
-            $backupCommand = "reg export '$key' '$backupFilePath' /y"
+            $backupFilePath = Join-Path -Path $backupPath -ChildPath "$($key.Replace('\', '_')).reg"
+            $backupCommand = "reg export '$key' '$backupFilePath' /y | Out-Null"
             # Backup the current registry value
             if ($v) {
                 Write-Output "Backing up $($key)\$($valueName) to $($backupFilePath)..."

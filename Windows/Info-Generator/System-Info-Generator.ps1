@@ -80,6 +80,12 @@ Write-Output "" | Out-File -FilePath log.txt -Append
 #Get SMB shares
 Get-SmbShare | Out-File -FilePath log.txt -Append
 
+#Established connections
+Write-Output "`n#### Start Established Connections ####`n" | Out-File -FilePath log.txt -Append
+netstat -ano | findstr ESTABLISHED | Where-Object {$_ -notmatch '\[.*\]'} | Out-File -FilePath log.txt -Append
+Write-Output "`n#### End Established Connections ####" | Out-File -FilePath log.txt -Append
+
+
 #Get DNS records if DC (Credit: CPP Inv.ps1)
 $DC = Get-WmiObject -Query "select * from Win32_OperatingSystem where ProductType='2'"
 if ($DC) {

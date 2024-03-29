@@ -61,6 +61,9 @@ if [ -f "/etc/sudoers.d" ]; then
     empty_line
 fi
 
+grep NOPASSWD /etc/sudoers /etc/sudoers.d/*
+grep "\!authenticate" /etc/sudoers /etc/sudoers.d/*
+
 # check if sudo is vulnerable (based on searchsploit)
 sep 
 echo "Sudo Version Check"
