@@ -67,7 +67,7 @@ if __name__ == "__main__":
         manager.get_all_users()
 
     if args.set_password:
-        manager.change_user_password(*args.set_password)
+        manager.change_user_password(*args.set_password.split(':'))
 
     if args.rotate_passwords:
         manager.rotate_user_passwords(args.rotate_passwords)
