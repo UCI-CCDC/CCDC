@@ -336,7 +336,7 @@ if (!$Restore) {
         
         if (!$NoBackup) {
             $backupFilePath = Join-Path -Path $backupPath -ChildPath "$($key.Replace('\', '_')).reg"
-            $backupCommand = "reg export '$key' '$backupFilePath' /y"
+            $backupCommand = "reg export '$key' '$backupFilePath' /y | Out-Null"
             # Backup the current registry value
             if ($v) {
                 Write-Output "Backing up $($key)\$($valueName) to $($backupFilePath)..."
@@ -345,7 +345,7 @@ if (!$Restore) {
         }
 
         # Modify the registry value
-        $setValueCommand = "reg ADD '$key' /v '$valueName' /t $($change.ValueType) /d $($change.ValueData) /f"
+        $setValueCommand = "reg add '$key' /v '$valueName' /t $($change.ValueType) /d $($change.ValueData) /f | Out-Null"
         if ($v) {
             Write-Output "Modifying $($key)\$($valueName)..."
         }
@@ -358,8 +358,8 @@ if (!$Restore) {
         net start DNS
     }
 
-    # net share admin$ /del
-    # net share c$ /del
+    net share admin$ /del
+    net share c$ /del
     # reg delete hklm\software\microsoft\windows\currentversion\runonce /f
     # reg delete hklm\software\microsoft\windows\currentversion\run /f
     # del /S "C:\Users\Administrator\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\*"
