@@ -7,7 +7,7 @@ $existingUsers = @()
 # Get all users
 $DC = Get-WmiObject -Query "select * from Win32_OperatingSystem where ProductType='2'"
 if ($DC) {
-    $users = Get-ADUser -Filter * | Select-Object -ExpandProperty sAMAccountName
+    $users = Get-ADUser -Filter * | Where-Object {$defaultUsers -notcontains $_.sAMAccountName} | Select-Object -ExpandProperty sAMAccountName
 }
 else {
     $users = Get-WmiObject Win32_UserAccount | Where-Object {$_.LocalAccount -eq $true -and $defaultUsers -notcontains $_.Name} | Select-Object -ExpandProperty Name
@@ -32,6 +32,6 @@ $authorizedUsers | ForEach-Object {
     $user = $_
     if ($existingUsers -notcontains $user) {
         Write-Host "Adding user: $user"
-        net user $user AmazingPassword123! /add | Out-Null
+        net user $user AmazingPassword1! /add | Out-Null
     }
 }
