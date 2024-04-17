@@ -72,15 +72,14 @@ func (p *Password) generate() ([][]byte, error) {
 		setSeed(p.Seed)
 	}
 
-	p.generatePool()
-
-	if !p.Repeat && int(p.Length) > (len(p.pool)+len(p.Include)) {
-		return nil, errors.New("password length is higher than the pool and repetition is turned off")
-	}
-
 	password_list := make([][]byte, p.Number)
 
 	for i:=0; i<int(p.Number); i++ {
+		p.generatePool()
+
+		if !p.Repeat && int(p.Length) > (len(p.pool)+len(p.Include)) {
+			return nil, errors.New("password length is higher than the pool and repetition is turned off")
+		}
 		password_list[i] = p.sanitize(p.buildPassword())
 	}
 
