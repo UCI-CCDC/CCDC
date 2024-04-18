@@ -36,6 +36,8 @@ else
             echo 'export PATH' >> $homedir/.profile
         fi
     done
+
+    echo "ITS SO BLUE"
 fi
 
 sys=$(command -v service || command -v systemctl || command -v rc-service)
