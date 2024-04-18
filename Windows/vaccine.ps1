@@ -282,14 +282,6 @@ $registryChanges = @(
         ValueName = "EnableScriptBlockLogging"
         ValueType = "REG_DWORD"
         ValueData = 1
-    },
-
-    # NLA
-    @{
-        Key = "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp"
-        ValueName = "UserAuthentication"
-        ValueType = "REG_DWORD"
-        ValueData = 1
     }
 )
 
