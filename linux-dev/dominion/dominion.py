@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import domlogging
 import passwords
 import argparse
 import pathlib
@@ -21,6 +22,8 @@ def main() -> None:
     parser.add_argument('-R', '--rotate', help=f'Change all passwords in {IP_USER_MAP}', action='store_true')
     parser.add_argument('-I', '--inventory', help=f'Run Inventory on all hosts in {IP_USER_MAP}', action='store_true')
     parser.add_argument('-B', '--basic', help=f'Run "basic" inventory on all hosts in {IP_USER_MAP}', action='store_true')
+    parser.add_argument('-BLUE', '--blue', help=f'"blue.sh" on all hosts in {IP_USER_MAP}', action='store_true')
+    parser.add_argument('-LOG', '--logging', help=f'Run logging.sh on all hosts in {IP_USER_MAP}', action='store_true')
     parser.add_argument('-SSH', '--ssh', help=f'SSH hardening on all hosts in {IP_USER_MAP}', action='store_true')
     parser.add_argument('-PHP', '--php', help=f'PHP hardening on all hosts in {IP_USER_MAP}', action='store_true')
     parser.add_argument('-POL', '--pwpolicy', help=f'Password policy capture on all hosts in {IP_USER_MAP}', action='store_true')
@@ -73,6 +76,9 @@ def main() -> None:
     if args.pwpolicy:
         utils.run_script_against_all_hosts(pathlib.Path("../linux-toolbox/pw_pol.sh"))
 
+    if args.blue:
+        utils.run_script_against_all_hosts(pathlib.Path("../linux-hardening/blue.sh"))
+
     if args.ssh:
         utils.run_script_against_all_hosts(pathlib.Path("../linux-hardening/ssh.sh"))
 
@@ -85,6 +91,10 @@ def main() -> None:
     if args.initialbase:
         data = utils.read_all()
         base.initial_base_across_boxes(data)
+
+    if args.logging:
+        data = utils.read_all()
+        domlogging.logging_across_boxes(data)
 
     if args.passwords:
         utils.run_script_against_all_hosts(pathlib.Path("../linux-hardening/pass.sh"))
