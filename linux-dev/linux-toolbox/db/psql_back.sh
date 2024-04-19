@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env sh
 
 if [ "$#" -ne 4 ]; then
     echo "Usage: $0 <psql host> <psql_user> <psql_password> <data_path>"
