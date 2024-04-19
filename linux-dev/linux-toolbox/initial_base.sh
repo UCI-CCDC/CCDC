@@ -190,6 +190,21 @@ else
 fi
 sep
 
+# Backup /etc/sysctl.conf
+if [ -f "/etc/sysctl.conf" ]; then
+    echo_if_not_quiet "Backing up /etc/sysctl.conf..."
+    cp /etc/sysctl.conf "$backup_dir/sysctl.bak"
+    if [ $? -eq 0 ]; then
+        chmod 600 "$backup_dir/sysctl.bak"
+        echo_if_not_quiet "Done backing up /etc/sysctl.conf."
+    else
+        echo "[!] Error: Failed to create backup for /etc/sysctl.conf."
+    fi
+else
+    echo_if_not_quiet "[!] Error: /etc/sysctl.conf not found."
+fi
+sep
+
 # Backup aliases from .bash_aliases (assuming Bash)
 if [ -f "$HOME/.bash_aliases" ]; then
     echo_if_not_quiet "Backing up aliases from .bash_aliases..."
